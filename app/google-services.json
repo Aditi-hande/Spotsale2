@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "130900427307",
+    "firebase_url": "https://spotsale-50962.firebaseio.com",
+    "project_id": "spotsale-50962",
+    "storage_bucket": "spotsale-50962.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:130900427307:android:82266ce078c77de0e3a06e",
+        "android_client_info": {
+          "package_name": "com.example.ecommerce.spotsale2"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "130900427307-m6msl0b6cpebsabcjc15grtmd43ath4s.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.ecommerce.spotsale2",
+            "certificate_hash": "b7a840a4ad0830b9baaeea323675f5aa3fa758bb"
+          }
+        },
+        {
+          "client_id": "130900427307-0vnigvutcvov6r1iuigbrq5rqetki1f3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB8VY_wX1XaZWkg8vogOnw9C_7nWW28Yts"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "130900427307-0vnigvutcvov6r1iuigbrq5rqetki1f3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
