@@ -1,6 +1,8 @@
 package com.example.ecommerce.spotsale2;
 
 import android.app.ProgressDialog;
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -18,6 +20,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.SearchView;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -29,18 +32,17 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
 public class CatalogActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    RecyclerView recyclerView;
-
-    ArrayList<Product> products;
-
-    RecyclerView.LayoutManager recyclerLayoutManager;
-    ProductAdapter adapter;
+    private RecyclerView recyclerView;
+    private RecyclerView.LayoutManager recyclerLayoutManager;
+    private ArrayList<Product> products;
+    private ProductAdapter adapter;
 
     private ProgressDialog PD;
 
@@ -53,7 +55,7 @@ public class CatalogActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        ((CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar)).setTitle("Spotsale");
+        //((CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar)).setTitle("Spotsale");
 
         /*    Initialize Floating Action Button    */
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -61,7 +63,12 @@ public class CatalogActivity extends AppCompatActivity
             @Override
             public void onClick(View view) {
                 Snackbar.make(view, "Cart is not yet available", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                        .setAction("Action", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                Toast.makeText(getApplicationContext(), "Fuck you !", Toast.LENGTH_LONG).show();
+                            }
+                        }).show();
             }
         });
 
@@ -98,6 +105,14 @@ public class CatalogActivity extends AppCompatActivity
         products = new ArrayList<Product>();
 
         PD.show();
+
+        /*    Initialize Search bar    */
+        SearchView searchView = (SearchView) findViewById(R.id.search_view);
+        searchView.setSearchableInfo(
+                ((SearchManager) getSystemService(Context.SEARCH_SERVICE))
+                        .getSearchableInfo(getComponentName())
+        );
+        searchView.setIconifiedByDefault(false);
 
         /*    Get data from Database to populate Recycler View    */
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("Products");
