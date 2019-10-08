@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">Spotsale2</string>
+    <string name="app_label">Spotsale2</string>
     <string name="splashimg">splash</string>
     <string name="title_activity_post_login">PostLogin</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
@@ -9,4 +10,5 @@
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_login_activity">LoginActivity</string>
+    <string name="search_hint">Search for products, brands or models</string>
 </resources>

@@ -4,10 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-
     tools:context=".HomeActivity">
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/button"
         android:layout_width="170dp"
         android:layout_height="wrap_content"
@@ -18,7 +17,7 @@
         android:onClick="login"
         android:text="LOGIN" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/button2"
         android:layout_width="170dp"
         android:layout_height="wrap_content"
@@ -27,7 +26,7 @@
         android:layout_marginStart="2dp"
         android:layout_marginBottom="42dp"
         android:background="@color/colorPrimary"
-         android:onClick="register"
+        android:onClick="register"
         android:text="REGISTER" />
 
     <ImageView

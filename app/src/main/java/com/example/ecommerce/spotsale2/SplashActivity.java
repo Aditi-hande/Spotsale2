@@ -10,7 +10,7 @@ import android.widget.ImageView;
 
 
 public class SplashActivity extends AppCompatActivity {
-    private static int splash_timeout = 4000;
+    private static int splash_timeout = 1000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

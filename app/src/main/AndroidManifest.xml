@@ -24,7 +24,7 @@
         </activity>
         <activity android:name=".HomeActivity" />
         <activity
-            android:name=".PostLogin"
+            android:name=".CatalogActivity"
             android:label="@string/title_activity_post_login"
             android:theme="@style/SplashTheme" />
         <activity
@@ -34,7 +34,6 @@
         <activity android:name=".RegisterActivity" />
         <activity android:name=".ForgetAndChangePasswordActivity" />
         <activity android:name=".UserActivity" />
-        <activity android:name=".CatalogActivity" />
         <activity android:name=".ProductActivity"></activity>
     </application>
 

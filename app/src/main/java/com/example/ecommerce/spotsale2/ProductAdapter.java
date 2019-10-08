@@ -1,11 +1,9 @@
 package com.example.ecommerce.spotsale2;
 
-import android.graphics.Bitmap;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -17,7 +15,7 @@ import java.util.ArrayList;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder> {
+public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHolder> {
 
     public interface OnItemClickListener {
         void onItemClick(Product product);
@@ -27,7 +25,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder
 
     private ArrayList<Product> products;
 
-    public CustomAdapter(ArrayList<Product> products, OnItemClickListener listener) {
+    public ProductAdapter(ArrayList<Product> products, OnItemClickListener listener) {
         this.products = products;
         this.listener = listener;
     }
@@ -35,7 +33,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.recycler_row_layout, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.recycler_row_catalog, parent, false);
         return new ViewHolder(view);
     }
 
@@ -44,9 +42,13 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder
 
         Log.d("Product[" + position + "]", products.get(position).getCat_id().toString());
 
-        Picasso.get().load(products.get(position).getImageUrl()).into(holder.imageView);
+        Picasso.get().load(products.get(position).getImageUrl())
+                .placeholder(R.drawable.ic_img_placeholder)
+                .error(R.drawable.ic_img_error)
+                //.resizeDimen(R.dimen.catalog_image_width, R.dimen.catalog_image_height)
+                .into(holder.imageView);
         holder.nameView.setText(products.get(position).getName());
-        holder.descView.setText(products.get(position).getDescription());
+        holder.costView.setText(String.valueOf(products.get(position).getCost()));
         holder.bind(products.get(position), listener);
     }
 
@@ -59,14 +61,14 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
         ImageView imageView;
-        TextView nameView, descView;
+        TextView nameView, costView;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
             imageView = (ImageView) itemView.findViewById(R.id.row_image);
             nameView = (TextView) itemView.findViewById(R.id.row_name);
-            descView = (TextView) itemView.findViewById(R.id.row_desc);
+            costView = (TextView) itemView.findViewById(R.id.row_cost);
 
         }
 

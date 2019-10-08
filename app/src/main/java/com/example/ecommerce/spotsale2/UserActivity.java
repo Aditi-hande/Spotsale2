@@ -67,12 +67,6 @@ public class UserActivity extends AppCompatActivity {
             }
         });
 
-        findViewById(R.id.catalog_button).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(), CatalogActivity.class));
-            }
-        });
     }
 
     @Override    protected void onResume() {
