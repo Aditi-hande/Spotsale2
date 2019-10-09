@@ -2,8 +2,11 @@ package com.example.ecommerce.spotsale2;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -35,5 +38,12 @@ public class ProductActivity extends AppCompatActivity {
         descText.setText(product.getDescription());
 
         Picasso.get().load(product.getImageUrl()).into(imageView);
+
+        ((Button)findViewById(R.id.add_to_cartbtn)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getApplicationContext(), CartActivity.class));
+            }
+        });
     }
 }

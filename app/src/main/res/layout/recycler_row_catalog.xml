@@ -5,7 +5,6 @@
     android:layout_height="wrap_content"
     android:elevation="10dp"
     android:padding="18dp"
-    android:onClick="viewProductDetails"
     >
 
     <ImageView
