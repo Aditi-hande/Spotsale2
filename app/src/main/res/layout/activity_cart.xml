@@ -40,6 +40,6 @@
         android:layout_height="wrap_content"
         android:text="Place Order"
         android:layout_gravity="bottom"
-        />
+        android:onClick="Payment"/>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

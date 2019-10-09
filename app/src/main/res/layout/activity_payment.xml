@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_height="match_parent"
+    tools:context=".PaymentActivity">
+
+
+    <TextView
+       android:id="@+id/welcome_txt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="WELCOME TO THE PAYMENT PORTAL"
+        android:layout_gravity="center"
+        android:textSize="23dp"
+        android:layout_marginTop="18dp"/>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginRight="20dp"
+
+        android:id="@+id/name"
+        android:hint="Name"
+
+
+
+        />
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginRight="20dp"
+        android:inputType="numberDecimal"
+        android:id="@+id/amount"
+        android:hint="Amount"
+
+
+        />
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:inputType="textMultiLine"
+        android:id="@+id/note"
+        android:hint="Note for delivery"
+
+
+        />
+
+    <Button
+        android:id="@+id/paybutton"
+        android:layout_width="500dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:layout_gravity="center"
+
+        android:text="SEND USING UPI"
+        android:textColor="#fff" />
+</LinearLayout>
