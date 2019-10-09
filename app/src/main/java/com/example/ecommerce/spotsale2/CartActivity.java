@@ -18,8 +18,10 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.ecommerce.spotsale2.DatabaseClasses.Cart;
 import com.example.ecommerce.spotsale2.DatabaseClasses.Product;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -34,6 +36,7 @@ public class CartActivity extends AppCompatActivity {
 
     //final Spinner spinner = (Spinner) findViewById(R.id.cart_address);
 
+    private Cart cart;
 
     List<String> addr_list = new ArrayList<String>();
     RecyclerView recyclerView;
@@ -50,10 +53,12 @@ public class CartActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cart);
+
+        cart = (Cart) getIntent().getSerializableExtra("activeCart");
+
         addr_list.add("Select Address");// this will act as hint for spinner
 
         //add addresses respective to that uid in addr_list
-
 
         PD = new ProgressDialog(this);
         PD.setMessage("Loading...");
@@ -70,13 +75,16 @@ public class CartActivity extends AppCompatActivity {
         PD.show();
 
 
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("Products");
-        databaseReference.addValueEventListener(new ValueEventListener() {
+        FirebaseDatabase.getInstance().getReference()
+                .child(getResources().getText(R.string.carts).toString())
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .child(cart.getCart_id())
+                .child("productList")
+                .addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     products.add(snapshot.getValue(Product.class));
-                    Log.d("OnDataChange", "Working");
                     adapter = new CartAdapter(products, new CartAdapter.OnItemClickListener() {
                         @Override
                         public void onItemClick(Product product, View view) {
@@ -93,7 +101,7 @@ public class CartActivity extends AppCompatActivity {
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-                Log.d("OnCanclled", "Cancelled");
+                Log.d("OnCancelled", "Cancelled");
             }
         });
 

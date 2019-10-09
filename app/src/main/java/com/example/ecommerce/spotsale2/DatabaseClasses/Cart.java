@@ -1,28 +1,30 @@
 package com.example.ecommerce.spotsale2.DatabaseClasses;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Cart implements Serializable {
 
 
-    private int cart_id ;
+    private String cart_id ;
     private int total_items;
     private List<Product> productList;
     private double total_sum;
-    private String UID;
-    enum status { active, delivered, pending };
+    public enum Status { ACTIVE, DELIVERED, PENDING }
+    private Status status;
 
 
+    public Cart(){
+        productList = new ArrayList<>();
+    }
 
-    public Cart(){};
-
-    public Cart(int cart_id, int total_items, List<Product> productList, double total_sum, String UID) {
+    public Cart(String cart_id, int total_items, List<Product> productList, double total_sum, Cart.Status status) {
         this.cart_id = cart_id;
         this.total_items = total_items;
         this.productList = productList;
         this.total_sum = total_sum;
-        this.UID = UID;
+        this.status = status;
     }
 
     public List<Product> getProductList() {
@@ -33,11 +35,11 @@ public class Cart implements Serializable {
         this.productList = productList;
     }
 
-    public int getCart_id() {
+    public String getCart_id() {
         return cart_id;
     }
 
-    public void setCart_id(int cart_id) {
+    public void setCart_id(String cart_id) {
         this.cart_id = cart_id;
     }
 
@@ -57,11 +59,12 @@ public class Cart implements Serializable {
         this.total_sum = total_sum;
     }
 
-    public String getUID() {
-        return UID;
+    public Status getStatus() {
+        return status;
     }
 
-    public void setUID(String UID) {
-        this.UID = UID;
+    public void setStatus(Status status) {
+        this.status = status;
     }
+
 }

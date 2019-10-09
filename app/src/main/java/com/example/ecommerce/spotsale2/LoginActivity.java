@@ -16,10 +16,16 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.ecommerce.spotsale2.DatabaseClasses.Cart;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -98,7 +104,8 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
-    @Override    protected void onResume() {
+    @Override
+    protected void onResume() {
         if (auth.getCurrentUser() != null) {
             startActivity(new Intent(LoginActivity.this, CatalogActivity.class));
             finish();

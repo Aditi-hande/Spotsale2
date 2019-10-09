@@ -1,13 +1,15 @@
 package com.example.ecommerce.spotsale2.DatabaseClasses;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Users implements Serializable {
     private String username;
     private String address;
-   private String email;
+    private String email;
 
-   public Users(){}
+    public Users(){}
 
     public Users(String username, String address, String email) {
         this.username = username;
@@ -38,4 +40,5 @@ public class Users implements Serializable {
     public void setEmail(String email) {
         this.email = email;
     }
+    
 }

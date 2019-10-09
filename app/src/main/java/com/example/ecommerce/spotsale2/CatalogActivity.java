@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.example.ecommerce.spotsale2.DatabaseClasses.Cart;
 import com.example.ecommerce.spotsale2.DatabaseClasses.Product;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -46,6 +47,8 @@ public class CatalogActivity extends AppCompatActivity
 
     private ProgressDialog PD;
 
+    private Cart activeCart;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,13 +65,7 @@ public class CatalogActivity extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Cart is not yet available", Snackbar.LENGTH_LONG)
-                        .setAction("Action", new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                Toast.makeText(getApplicationContext(), "Fuck you !", Toast.LENGTH_LONG).show();
-                            }
-                        }).show();
+                startActivity(new Intent(getApplicationContext(), CartActivity.class).putExtra("activeCart", activeCart));
             }
         });
 
@@ -123,8 +120,30 @@ public class CatalogActivity extends AppCompatActivity
                     products.add(snapshot.getValue(Product.class));
                     adapter = new ProductAdapter(products, new ProductAdapter.OnItemClickListener() {
                         @Override
-                        public void onItemClick(Product product) {
-                            startActivity(new Intent(getApplicationContext(), ProductActivity.class).putExtra("product", product));
+                        public void onItemClick(final Product product) {
+                            FirebaseDatabase.getInstance().getReference()
+                                    .child(getResources().getText(R.string.carts).toString())
+                                    .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                    .orderByChild("status")
+                                    .equalTo(Cart.Status.ACTIVE.toString())
+                                    .limitToFirst(1)
+                                    .addValueEventListener(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                            if(dataSnapshot.hasChildren()){
+                                                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                                                    activeCart = snapshot.getValue(Cart.class);
+                                                    startActivity(new Intent(getApplicationContext(), ProductActivity.class)
+                                                            .putExtra("product", product).putExtra("activeCart", activeCart));
+                                                }
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                        }
+                                    });
                         }
                     });
                 }
@@ -199,4 +218,31 @@ public class CatalogActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
+    private void setUpActiveCart() {
+
+        FirebaseDatabase.getInstance().getReference()
+                .child(getResources().getText(R.string.carts).toString())
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .orderByChild("status")
+                .equalTo(Cart.Status.ACTIVE.toString())
+                .limitToFirst(1)
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        if(dataSnapshot.hasChildren()){
+                            for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                                activeCart = snapshot.getValue(Cart.class);
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+
+    }
+
 }
