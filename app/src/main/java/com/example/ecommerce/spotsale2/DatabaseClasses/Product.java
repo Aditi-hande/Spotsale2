@@ -1,5 +1,7 @@
 package com.example.ecommerce.spotsale2.DatabaseClasses;
 
+import androidx.annotation.NonNull;
+
 import java.io.Serializable;
 import java.util.List;
 
@@ -99,4 +101,10 @@ public class Product implements Serializable {
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
     }
+
+    /*@NonNull
+    @Override
+    public String toString() {
+        return cat_id + item_id;
+    }*/
 }
