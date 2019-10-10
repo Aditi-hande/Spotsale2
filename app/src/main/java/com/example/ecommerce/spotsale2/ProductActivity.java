@@ -55,7 +55,7 @@ public class ProductActivity extends AppCompatActivity {
 
         Picasso.get().load(product.getImageUrl()).into(imageView);
 
-        findViewById(R.id.add_to_cartbtn).setOnClickListener(new View.OnClickListener() {
+        ((Button) findViewById(R.id.add_to_cartbtn)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 DatabaseReference ref = FirebaseDatabase.getInstance().getReference()

@@ -48,6 +48,7 @@ public class CartActivity extends AppCompatActivity {
 
     private ProgressDialog PD;
 
+    DatabaseReference cartRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,7 +66,7 @@ public class CartActivity extends AppCompatActivity {
         PD.setCancelable(true);
         PD.setCanceledOnTouchOutside(false);
 
-        Log.d("CartActivity", "Idhar to aaya bc");
+        Log.d("CallingActivity", getIntent().getStringExtra("callingActivity"));
 
 
         recyclerView = (RecyclerView) findViewById(R.id.cart_recycler);
@@ -74,12 +75,13 @@ public class CartActivity extends AppCompatActivity {
 
         PD.show();
 
-
-        FirebaseDatabase.getInstance().getReference()
+        cartRef = FirebaseDatabase.getInstance().getReference()
                 .child(getResources().getText(R.string.carts).toString())
                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                .child(cart.getCart_id())
-                .child("productList")
+                .child(cart.getCart_id());
+
+
+        cartRef.child("productList")
                 .addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -88,7 +90,10 @@ public class CartActivity extends AppCompatActivity {
                     adapter = new CartAdapter(products, new CartAdapter.OnItemClickListener() {
                         @Override
                         public void onItemClick(Product product, View view) {
-                            Snackbar.make(view, "Cannot delete ... Now buy this shit !!", Snackbar.LENGTH_LONG).show();
+                            cart.getProductList().remove(product);
+                            cart.setTotal_sum(cart.getTotal_sum() - product.getCost());
+                            cart.setTotal_items(cart.getTotal_items() - 1);
+                            cartRef.setValue(cart);
                         }
                     });
                 }

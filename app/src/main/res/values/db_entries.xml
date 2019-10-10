@@ -2,5 +2,5 @@
 <resources>
     <string name="users">Users</string>
     <string name="carts">Carts</string>
-    <string name="products">Products</string>
+    <string name="products">products</string>
 </resources>
