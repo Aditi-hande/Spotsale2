@@ -17,7 +17,7 @@
         android:textSize="23dp"
         android:layout_marginTop="18dp"/>
 
-    <EditText
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="20dp"
@@ -25,35 +25,25 @@
         android:layout_marginRight="20dp"
 
         android:id="@+id/name"
-        android:hint="Name"
+        android:hint="Name" />
 
-
-
-        />
-    <EditText
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="20dp"
         android:layout_marginTop="20dp"
         android:layout_marginRight="20dp"
-        android:inputType="numberDecimal"
         android:id="@+id/amount"
-        android:hint="Amount"
+        android:hint="Amount" />
 
-
-        />
-    <EditText
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
-        android:inputType="textMultiLine"
         android:id="@+id/note"
-        android:hint="Note for delivery"
-
-
-        />
+        android:hint="Note for delivery" />
 
     <Button
         android:id="@+id/paybutton"

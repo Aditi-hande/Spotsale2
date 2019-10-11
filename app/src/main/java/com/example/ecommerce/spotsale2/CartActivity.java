@@ -169,7 +169,7 @@ public class CartActivity extends AppCompatActivity {
     public void Payment(View view){
         //have to pass total amt value thru this intent
         Intent intent=new Intent(CartActivity.this,PaymentActivity.class);
-        startActivity(intent);
+        startActivity(intent.putExtra("cart", cart));
     }
 
 }

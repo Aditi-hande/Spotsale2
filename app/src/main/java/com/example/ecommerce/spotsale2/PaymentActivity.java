@@ -10,45 +10,67 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 
+import com.example.ecommerce.spotsale2.DatabaseClasses.Cart;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
 import java.util.ArrayList;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.ecommerce.spotsale2.DatabaseClasses.Users;
 
 public class PaymentActivity extends AppCompatActivity {
 
     final int UPI_PAYMENT = 0;
-    EditText upi_id,name_sender,amountinput,noteinput;
     Button sendbtn;
 
+    private Users user;
+    private Cart cart;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_payment);
 
-        initializeViews();
-        sendbtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String amount = amountinput.getText().toString();
-               // String upi = upi_id.getText().toString();
-                String upi="athang213@oksbi";
-                String name = name_sender.getText().toString();
-                String note = noteinput.getText().toString();
-                payUsingUpi(amount, upi, name, note);
-            }
-        });
-    }
-    void initializeViews(){
-        sendbtn=findViewById(R.id.paybutton);
-        //upi_id=findViewById(R.id.upi_id);
+        FirebaseDatabase.getInstance().getReference()
+                .child(getResources().getText(R.string.users).toString())
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        user = dataSnapshot.getValue(Users.class);
+                        cart = (Cart) getIntent().getSerializableExtra("cart");
 
-        name_sender=findViewById(R.id.name);
-        amountinput=findViewById(R.id.amount);
-        noteinput=findViewById(R.id.note);
+                        ((TextView)findViewById(R.id.name)).setText(user.getUsername());
+                        ((TextView)findViewById(R.id.amount)).setText(String.valueOf(cart.getTotal_sum()));
+                        ((TextView)findViewById(R.id.note)).setText("Order ID: " + cart.getCart_id());
+
+                        sendbtn.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                String amount = String.valueOf(cart.getTotal_sum()%50);
+                                String upi="athang213@oksbi";
+                                String name = user.getUsername();
+                                String note = "Order ID: " + cart.getCart_id();
+                                payUsingUpi(amount, upi, name, note);
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
 
     }
 

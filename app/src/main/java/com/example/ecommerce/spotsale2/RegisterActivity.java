@@ -26,7 +26,8 @@ public class RegisterActivity extends AppCompatActivity {
     private FirebaseAuth auth;
     private Button btnSignUp, btnLogin;
 
-    DatabaseReference databaseReference= FirebaseDatabase.getInstance().getReference().child("Users");
+    DatabaseReference databaseReference= FirebaseDatabase.getInstance().getReference()
+            .child(getResources().getText(R.string.users).toString());
 
 
 
