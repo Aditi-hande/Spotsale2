@@ -44,10 +44,10 @@ public class PaymentActivity extends AppCompatActivity {
         FirebaseDatabase.getInstance().getReference()
                 .child(getResources().getText(R.string.users).toString())
                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                .addValueEventListener(new ValueEventListener() {
+                .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        user = dataSnapshot.getValue(Users.class);
+                        user = (Users) dataSnapshot.getValue(Users.class);
                         cart = (Cart) getIntent().getSerializableExtra("cart");
 
                         ((TextView)findViewById(R.id.name)).setText(user.getUsername());

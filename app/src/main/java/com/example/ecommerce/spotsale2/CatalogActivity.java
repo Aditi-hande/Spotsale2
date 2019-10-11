@@ -1,11 +1,14 @@
 package com.example.ecommerce.spotsale2;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.appyvet.materialrangebar.RangeBar;
 import com.example.ecommerce.spotsale2.DatabaseClasses.Cart;
 import com.example.ecommerce.spotsale2.DatabaseClasses.Product;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -173,6 +176,42 @@ public class CatalogActivity extends AppCompatActivity
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
+        } else if (id == R.id.action_filter) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setView(R.layout.dialog_filter);
+            builder.setPositiveButton("Apply", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    Toast.makeText(getApplicationContext(), "Apply Filters not yet available", Toast.LENGTH_LONG).show();
+                }
+            });
+            builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    Toast.makeText(getApplicationContext(), "Cancel Filtering", Toast.LENGTH_SHORT).show();
+                }
+            });
+            final AlertDialog dialog = builder.create();
+
+            ((RangeBar) dialog.findViewById(R.id.range_bar)).setOnRangeBarChangeListener(new RangeBar.OnRangeBarChangeListener() {
+                @Override
+                public void onRangeChangeListener(RangeBar rangeBar, int leftPinIndex, int rightPinIndex, String leftPinValue, String rightPinValue) {
+                    ((TextView) dialog.findViewById(R.id.range_start)).setText(leftPinValue);
+                    ((TextView) dialog.findViewById(R.id.range_end)).setText(rightPinValue);
+                }
+
+                @Override
+                public void onTouchStarted(RangeBar rangeBar) {
+
+                }
+
+                @Override
+                public void onTouchEnded(RangeBar rangeBar) {
+
+                }
+            });
+
+            dialog.show();
         }
 
         return super.onOptionsItemSelected(item);

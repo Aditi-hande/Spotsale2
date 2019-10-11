@@ -39,4 +39,5 @@ dependencies {
     implementation 'com.google.firebase:firebase-core:16.0.6'
     implementation 'com.google.firebase:firebase-database:16.0.1'
     implementation 'com.squareup.picasso:picasso:2.71828'
+    implementation 'com.appyvet:materialrangebar:1.4.6'
 }
