@@ -54,7 +54,7 @@ public class PaymentActivity extends AppCompatActivity {
                         ((TextView)findViewById(R.id.amount)).setText(String.valueOf(cart.getTotal_sum()));
                         ((TextView)findViewById(R.id.note)).setText("Order ID: " + cart.getCart_id());
 
-                        sendbtn.setOnClickListener(new View.OnClickListener() {
+                        ((Button) findViewById(R.id.paybutton)).setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
                                 String amount = String.valueOf(cart.getTotal_sum()%50);

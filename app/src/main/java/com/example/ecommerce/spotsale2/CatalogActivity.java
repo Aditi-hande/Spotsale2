@@ -35,6 +35,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.DialogFragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -123,6 +124,7 @@ public class CatalogActivity extends AppCompatActivity
         /*    Get data from Database to populate Recycler View    */
         FirebaseFirestore.getInstance()
                 .collection(getResources().getText(R.string.products).toString())
+
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -177,41 +179,40 @@ public class CatalogActivity extends AppCompatActivity
         if (id == R.id.action_settings) {
             return true;
         } else if (id == R.id.action_filter) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setView(R.layout.dialog_filter);
-            builder.setPositiveButton("Apply", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    Toast.makeText(getApplicationContext(), "Apply Filters not yet available", Toast.LENGTH_LONG).show();
-                }
-            });
-            builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    Toast.makeText(getApplicationContext(), "Cancel Filtering", Toast.LENGTH_SHORT).show();
-                }
-            });
-            final AlertDialog dialog = builder.create();
+            DialogFragment dialogFragment = new FilterDialogFragment(5000, 5, 10,
+                    new FilterDialogFragment.OnApplyListener() {
+                        @Override
+                        public void OnApplyFilters(double rangeMin, double rangeMax) {
+                            FirebaseFirestore.getInstance()
+                                    .collection(getResources().getText(R.string.products).toString())
+                                    .whereGreaterThanOrEqualTo("cost", rangeMin)
+                                    .whereLessThanOrEqualTo("cost", rangeMax)
+                                    .get()
+                                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                            if (task.isSuccessful()) {
+                                                for (QueryDocumentSnapshot doc : task.getResult()) {
+                                                    products.add(doc.toObject(Product.class));
+                                                }
+                                                adapter = new ProductAdapter(products, new ProductAdapter.OnItemClickListener() {
+                                                    @Override
+                                                    public void onItemClick(final Product product) {
+                                                        setUpActiveCartForActivity(new Intent(getApplicationContext(), ProductActivity.class)
+                                                                .putExtra("product", product));
+                                                    }
+                                                });
+                                                recyclerView.setHasFixedSize(true);
+                                                recyclerView.setLayoutManager(recyclerLayoutManager);
+                                                recyclerView.setAdapter(adapter);
 
-            ((RangeBar) dialog.findViewById(R.id.range_bar)).setOnRangeBarChangeListener(new RangeBar.OnRangeBarChangeListener() {
-                @Override
-                public void onRangeChangeListener(RangeBar rangeBar, int leftPinIndex, int rightPinIndex, String leftPinValue, String rightPinValue) {
-                    ((TextView) dialog.findViewById(R.id.range_start)).setText(leftPinValue);
-                    ((TextView) dialog.findViewById(R.id.range_end)).setText(rightPinValue);
-                }
-
-                @Override
-                public void onTouchStarted(RangeBar rangeBar) {
-
-                }
-
-                @Override
-                public void onTouchEnded(RangeBar rangeBar) {
-
-                }
-            });
-
-            dialog.show();
+                                                PD.dismiss();
+                                            }
+                                        }
+                                    });
+                        }
+                    });
+            dialogFragment.show(getSupportFragmentManager(), "Filters");
         }
 
         return super.onOptionsItemSelected(item);
@@ -244,6 +245,8 @@ public class CatalogActivity extends AppCompatActivity
 
     private void setUpActiveCartForActivity(final Intent intent) {
 
+        PD.show();
+
         FirebaseDatabase.getInstance().getReference()
                 .child(getResources().getText(R.string.carts).toString())
                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
@@ -256,9 +259,19 @@ public class CatalogActivity extends AppCompatActivity
                         if(dataSnapshot.hasChildren()){
                             for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                                 activeCart = snapshot.getValue(Cart.class);
-                                startActivity(intent.putExtra("activeCart", activeCart));
                             }
+                        } else {
+                            DatabaseReference ref = FirebaseDatabase.getInstance().getReference()
+                                    .child(getResources().getText(R.string.carts).toString())
+                                    .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                    .push();
+                            activeCart = new Cart();
+                            activeCart.setStatus(Cart.Status.ACTIVE);
+                            activeCart.setCart_id(ref.getKey());
+                            ref.setValue(activeCart);
                         }
+                        PD.dismiss();
+                        startActivity(intent.putExtra("activeCart", activeCart));
                     }
 
                     @Override

@@ -88,22 +88,24 @@ public class CartActivity extends AppCompatActivity {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     products.add(snapshot.getValue(Product.class));
                     cart.setProductList(products);
-                    adapter = new CartAdapter(products, new CartAdapter.OnItemClickListener() {
-                        @Override
-                        public void onItemClick(final Product product, View view) {
-                            products.remove(product);
-                            Log.d("DeleteFromCart", products.toString());
-                            cart.setProductList(products);
-                            cart.setTotal_sum(cart.getTotal_sum() - product.getCost());
-                            cart.setTotal_items(cart.getTotal_items() - 1);
-                            cartRef.setValue(cart);
-                            recreate();
-                        }
-                    });
                 }
+                adapter = new CartAdapter(products, new CartAdapter.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(final Product product, View view) {
+                        products.remove(product);
+                        Log.d("DeleteFromCart", products.toString());
+                        cart.setProductList(products);
+                        cart.setTotal_sum(cart.getTotal_sum() - product.getCost());
+                        cart.setTotal_items(cart.getTotal_items() - 1);
+                        cartRef.setValue(cart);
+                        recreate();
+                    }
+                });
                 recyclerView.setHasFixedSize(true);
                 recyclerView.setLayoutManager(recyclerLayoutManager);
                 recyclerView.setAdapter(adapter);
+
+                ((TextView) findViewById(R.id.cart_sum)).setText("Total: " + cart.getTotal_sum());
 
                 PD.dismiss();
             }

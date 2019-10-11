@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -8,28 +8,37 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/range_bar"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginStart="40dp"
         android:layout_marginEnd="40dp"
         app:mrb_rangeBar="true"
-        app:mrb_pinMaxFont="12sp"
-        app:mrb_pinMinFont="10sp"
+        app:mrb_pinMaxFont="15sp"
+        app:mrb_pinMinFont="12sp"
         app:mrb_pinRadius="18dp"
-        app:mrb_pinTextColor="@color/white"
-        app:mrb_tickStart="0"
-        app:mrb_tickEnd="50"
-        app:mrb_tickInterval="5"/>
+        app:mrb_pinTextColor="@color/white"/>
 
     <TextView
         android:id="@+id/range_start"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/range_bar"
+        android:layout_marginTop="10dp"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="30dp"
+        android:textSize="20sp"
+        android:text="0"/>
 
     <TextView
         android:id="@+id/range_end"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/range_bar"
+        android:layout_marginTop="10dp"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="30dp"
+        android:textSize="20sp"
+        android:text="50000"/>
 
 
 
-</LinearLayout>
+</RelativeLayout>

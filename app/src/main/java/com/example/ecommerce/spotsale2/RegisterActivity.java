@@ -26,8 +26,7 @@ public class RegisterActivity extends AppCompatActivity {
     private FirebaseAuth auth;
     private Button btnSignUp, btnLogin;
 
-    DatabaseReference databaseReference= FirebaseDatabase.getInstance().getReference()
-            .child(getResources().getText(R.string.users).toString());
+    DatabaseReference databaseReference;
 
 
 
@@ -36,7 +35,8 @@ public class RegisterActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
-
+        databaseReference = FirebaseDatabase.getInstance().getReference()
+                .child(getResources().getText(R.string.users).toString());
 
         auth = FirebaseAuth.getInstance();
 //if user is signed in then redirect to the main activity.
