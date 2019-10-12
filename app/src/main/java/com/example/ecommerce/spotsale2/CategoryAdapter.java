@@ -21,14 +21,12 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
     }
     private final OnItemClickListener listener;
 
-   public void onItemClick(){}
-
-    private static ArrayList<String> categories;
+    private
+    ArrayList<String> categories;
 
     public CategoryAdapter(ArrayList<String> categories,OnItemClickListener listener) {
         this.categories = categories;
         this.listener = listener;
-
     }
 
     @NonNull
@@ -41,17 +39,13 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
     @Override
     public void onBindViewHolder(@NonNull CategoryAdapter.ViewHolder holder, int position) {
         holder.nameView.setText(categories.get(position));
-        holder.bind(categories.get(position),listener);
+        holder.bind(categories.get(position), listener);
     }
 
     @Override
     public int getItemCount() {
-        int size=categories.size();
-        return size;
-        //Log.v("size",String.valueOf(categories.size()));
+        return categories.size();
     }
-
-
 
 
         public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -64,7 +58,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
                 nameView = (TextView) itemView.findViewById(R.id.row_name);
             }
 
-            public void bind( final String category,final OnItemClickListener listener) {
+            public void bind(final String category, final OnItemClickListener listener) {
                 itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {

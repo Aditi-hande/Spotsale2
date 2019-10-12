@@ -245,6 +245,8 @@ public class CatalogActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_Help) {
 
+        } else if (id == R.id.nav_addresses) {
+            startActivity(new Intent(getApplicationContext(), AddressActivity.class));
         } else if (id == R.id.nav_seller) {
             startActivity(new Intent(getApplicationContext(), SellerActivity.class));
         } else if (id == R.id.nav_additem) {

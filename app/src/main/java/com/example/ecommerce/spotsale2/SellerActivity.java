@@ -74,7 +74,7 @@ public class SellerActivity extends AppCompatActivity {
                         adapter = new CategoryAdapter(categorieslist, new CategoryAdapter.OnItemClickListener() {
 
                             public void onItemClick(String category) {
-                                Toast.makeText(SellerActivity.this,category,Toast.LENGTH_LONG);
+                                Toast.makeText(SellerActivity.this,category,Toast.LENGTH_LONG).show();
                             }
                         });
                         recyclerView.setHasFixedSize(false);
