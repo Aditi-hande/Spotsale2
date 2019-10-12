@@ -1,39 +1,24 @@
 package com.example.ecommerce.spotsale2;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import android.app.Dialog;
-import android.app.FragmentTransaction;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ListAdapter;
 import android.widget.Toast;
 
-import com.example.ecommerce.spotsale2.DatabaseClasses.Product;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
-import java.util.Locale;
 
-public class SellerActivity extends AppCompatActivity {
+public class CategoryActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
     private RecyclerView.LayoutManager recyclerLayoutManager;
@@ -46,7 +31,7 @@ public class SellerActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_seller);
+        setContentView(R.layout.activity_category);
 
         /*    Initialize Progress Dialog    */
         PD = new ProgressDialog(this);
@@ -55,7 +40,7 @@ public class SellerActivity extends AppCompatActivity {
         PD.setCanceledOnTouchOutside(false);
 
         /*    Initialize Recycler View    */
-        recyclerView = (RecyclerView) findViewById(R.id.seller_recycler);
+        recyclerView = (RecyclerView) findViewById(R.id.category_recycler);
         recyclerLayoutManager = new GridLayoutManager(this, 1);
 
         PD.show();
@@ -74,7 +59,9 @@ public class SellerActivity extends AppCompatActivity {
                         adapter = new CategoryAdapter(categorieslist, new CategoryAdapter.OnItemClickListener() {
 
                             public void onItemClick(String category) {
-                                Toast.makeText(SellerActivity.this,category,Toast.LENGTH_LONG);
+                                //Toast.makeText(CategoryActivity.this,category,Toast.LENGTH_LONG).show();
+                                Intent intent=new Intent(CategoryActivity.this,SubCategoryActivity.class).putExtra("category",category);
+                                startActivity(intent);
                             }
                         });
                         recyclerView.setHasFixedSize(false);
@@ -87,7 +74,7 @@ public class SellerActivity extends AppCompatActivity {
 
                     public void onCancelled( DatabaseError databaseError ) {
 
-                        Toast.makeText(SellerActivity.this,"error",Toast.LENGTH_LONG).show();
+                        Toast.makeText(CategoryActivity.this,"error",Toast.LENGTH_LONG).show();
                     }
                 });
 

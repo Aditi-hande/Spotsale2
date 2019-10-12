@@ -1,21 +1,16 @@
 package com.example.ecommerce.spotsale2;
 
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.app.SearchManager;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.appyvet.materialrangebar.RangeBar;
 import com.example.ecommerce.spotsale2.DatabaseClasses.Cart;
 import com.example.ecommerce.spotsale2.DatabaseClasses.Product;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 
 import android.util.Log;
 import android.view.View;
@@ -44,7 +39,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -246,9 +240,9 @@ public class CatalogActivity extends AppCompatActivity
         } else if (id == R.id.nav_Help) {
 
         } else if (id == R.id.nav_seller) {
-            startActivity(new Intent(getApplicationContext(), SellerActivity.class));
+            startActivity(new Intent(getApplicationContext(), CategoryActivity.class));
         } else if (id == R.id.nav_additem) {
-            Intent intent=new Intent(CatalogActivity.this,SellerActivity.class);
+            Intent intent=new Intent(CatalogActivity.this, CategoryActivity.class);
             startActivity(intent);
         } else if (id == R.id.nav_viewinv) {
 
