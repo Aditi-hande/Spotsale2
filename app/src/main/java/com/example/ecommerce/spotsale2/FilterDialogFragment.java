@@ -45,6 +45,9 @@ public class FilterDialogFragment extends DialogFragment {
         rangeBar.setTickStart(0);
         rangeBar.setTickEnd(tickEnd);
 
+        ((TextView)view.findViewById(R.id.range_start)).setText(String.valueOf(0));
+        ((TextView)view.findViewById(R.id.range_end)).setText(String.valueOf(tickEnd * priceMultiplier));
+
         (rangeBar).setOnRangeBarChangeListener(new RangeBar.OnRangeBarChangeListener() {
             @Override
             public void onRangeChangeListener(RangeBar rangeBar, int leftPinIndex, int rightPinIndex, String leftPinValue, String rightPinValue) {
@@ -68,7 +71,10 @@ public class FilterDialogFragment extends DialogFragment {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 //Toast.makeText(getActivity(), "Apply Filters not yet available", Toast.LENGTH_LONG).show();
-                listener.OnApplyFilters(Double.valueOf(rangeBar.getLeftPinValue()), Double.valueOf(rangeBar.getRightPinValue()));
+                listener.OnApplyFilters(
+                        Double.valueOf(rangeBar.getLeftPinValue()) * priceMultiplier,
+                        Double.valueOf(rangeBar.getRightPinValue()) * priceMultiplier
+                );
             }
         });
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {

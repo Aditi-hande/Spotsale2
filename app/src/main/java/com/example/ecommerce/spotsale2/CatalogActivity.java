@@ -16,6 +16,8 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
+
+import android.util.Log;
 import android.view.View;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -109,8 +111,12 @@ public class CatalogActivity extends AppCompatActivity
         /*    Initialize Recycler View    */
         recyclerView = (RecyclerView) findViewById(R.id.recylcer);
         recyclerLayoutManager = new GridLayoutManager(this, 1);
-        products = new ArrayList<Product>();
 
+        if(products == null) {
+            Log.d("APPLY_FAIL", "products is null");
+            products = new ArrayList<Product>();
+            Log.d("APPLY_FAIL", products.toString());
+        }
         PD.show();
 
         /*    Initialize Search bar    */
@@ -122,32 +128,34 @@ public class CatalogActivity extends AppCompatActivity
         searchView.setIconifiedByDefault(false);
 
         /*    Get data from Database to populate Recycler View    */
-        FirebaseFirestore.getInstance()
-                .collection(getResources().getText(R.string.products).toString())
+        if(products.isEmpty()) {
+            FirebaseFirestore.getInstance()
+                    .collection(getResources().getText(R.string.products).toString())
 
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot doc : task.getResult()) {
-                                products.add(doc.toObject(Product.class));
-                            }
-                            adapter = new ProductAdapter(products, new ProductAdapter.OnItemClickListener() {
-                                @Override
-                                public void onItemClick(final Product product) {
-                                    setUpActiveCartForActivity(new Intent(getApplicationContext(), ProductActivity.class)
-                                            .putExtra("product", product));
+                    .get()
+                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if (task.isSuccessful()) {
+                                for (QueryDocumentSnapshot doc : task.getResult()) {
+                                    products.add(doc.toObject(Product.class));
                                 }
-                            });
-                            recyclerView.setHasFixedSize(false);
-                            recyclerView.setLayoutManager(recyclerLayoutManager);
-                            recyclerView.setAdapter(adapter);
+                                adapter = new ProductAdapter(products, new ProductAdapter.OnItemClickListener() {
+                                    @Override
+                                    public void onItemClick(final Product product) {
+                                        setUpActiveCartForActivity(new Intent(getApplicationContext(), ProductActivity.class)
+                                                .putExtra("product", product));
+                                    }
+                                });
+                                recyclerView.setHasFixedSize(false);
+                                recyclerView.setLayoutManager(recyclerLayoutManager);
+                                recyclerView.setAdapter(adapter);
 
-                            PD.dismiss();
+                                PD.dismiss();
+                            }
                         }
-                    }
-                });
+                    });
+        }
 
     }
 
@@ -184,6 +192,10 @@ public class CatalogActivity extends AppCompatActivity
                         @Override
                         public void OnApplyFilters(double rangeMin, double rangeMax) {
                             PD.show();
+                            products.clear();
+
+                            Log.d("APPLY", "rangeMin:" + rangeMin + " rangeMax:" + rangeMax);
+
                             FirebaseFirestore.getInstance()
                                     .collection(getResources().getText(R.string.products).toString())
                                     .whereGreaterThanOrEqualTo("cost", rangeMin)
@@ -196,6 +208,7 @@ public class CatalogActivity extends AppCompatActivity
                                                 for (QueryDocumentSnapshot doc : task.getResult()) {
                                                     products.add(doc.toObject(Product.class));
                                                 }
+                                                Log.d("APPLY_COMPLETE", products.toString());
                                                 adapter = new ProductAdapter(products, new ProductAdapter.OnItemClickListener() {
                                                     @Override
                                                     public void onItemClick(final Product product) {
@@ -206,9 +219,6 @@ public class CatalogActivity extends AppCompatActivity
                                                 recyclerView.setHasFixedSize(false);
                                                 recyclerView.setLayoutManager(recyclerLayoutManager);
                                                 recyclerView.setAdapter(adapter);
-
-
-
                                                 PD.dismiss();
                                             }
                                         }
