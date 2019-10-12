@@ -16,7 +16,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".PaymentActivity"></activity>
+        <activity android:name=".SellerActivity"></activity>
+        <activity android:name=".PaymentActivity" />
         <activity android:name=".CartActivity" />
         <activity
             android:name=".SplashActivity"
@@ -42,7 +43,7 @@
         <activity android:name=".RegisterActivity" />
         <activity android:name=".ForgetAndChangePasswordActivity" />
         <activity android:name=".UserActivity" />
-        <activity android:name=".SellerActivity" />
+        
         <activity android:name=".ProductActivity" />
         <activity android:name=".SearchActivity">
             <intent-filter>

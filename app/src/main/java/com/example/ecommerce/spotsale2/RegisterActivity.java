@@ -66,6 +66,7 @@ public class RegisterActivity extends AppCompatActivity {
                     if (password.length() > 0 && email.length() > 0 && username.length()>0 && address.length()>0 ) {
 
                         auth.createUserWithEmailAndPassword(email, password)
+
                                 .addOnCompleteListener(RegisterActivity.this, new OnCompleteListener<AuthResult>() {
                                     @Override
                                     public void onComplete(@NonNull Task<AuthResult> task) {
@@ -74,11 +75,11 @@ public class RegisterActivity extends AppCompatActivity {
                                                     RegisterActivity.this,
                                                     "Authentication Failed",
                                                     Toast.LENGTH_LONG).show();
-                                            Log.v("error", task.getResult().toString());
+                                            //Log.v("error", task.getResult().toString());
                                         } else {
-
+                                             //Log.v("success",auth.getUid().toString());
                                             Users obj=new Users(username,address,email);
-                                            databaseReference.child(auth.getUid()).setValue(obj);
+                                            databaseReference.child( auth.getUid()).setValue(obj);
                                             Intent intent = new Intent(RegisterActivity.this, UserActivity.class);
                                             startActivity(intent);
                                             finish();

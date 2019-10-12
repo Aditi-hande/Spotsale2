@@ -238,7 +238,8 @@ public class CatalogActivity extends AppCompatActivity
         } else if (id == R.id.nav_seller) {
             startActivity(new Intent(getApplicationContext(), SellerActivity.class));
         } else if (id == R.id.nav_additem) {
-
+            Intent intent=new Intent(CatalogActivity.this,SellerActivity.class);
+            startActivity(intent);
         } else if (id == R.id.nav_viewinv) {
 
         }
