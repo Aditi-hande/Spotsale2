@@ -19,7 +19,7 @@ public class Cart implements Serializable {
         productList = new ArrayList<>();
     }
 
-    public Cart(String cart_id, int total_items, List<Product> productList, double total_sum, Cart.Status status) {
+    public Cart(String cart_id, int total_items, List<Product> productList, double total_sum, Status status) {
         this.cart_id = cart_id;
         this.total_items = total_items;
         this.productList = productList;

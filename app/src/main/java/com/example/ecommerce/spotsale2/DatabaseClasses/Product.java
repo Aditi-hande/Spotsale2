@@ -102,9 +102,9 @@ public class Product implements Serializable {
         this.imageUrl = imageUrl;
     }
 
-    /*@NonNull
+    @NonNull
     @Override
     public String toString() {
-        return cat_id + item_id;
-    }*/
+        return name;
+    }
 }

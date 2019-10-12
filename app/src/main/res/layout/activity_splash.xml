@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:foregroundGravity="center"
         android:layout_centerInParent="true"
-        android:src="@drawable/logo1"
+        android:src="@drawable/spotsale_logo"
         android:contentDescription="@string/splashimg"/>
 
     <!--TextView
