@@ -63,8 +63,9 @@ public class SubCategoryActivity extends AppCompatActivity {
                         adapter = new CategoryAdapter(subcategorieslist, new CategoryAdapter.OnItemClickListener() {
 
                             public void onItemClick(String subcategory) {
-                                Toast.makeText(SubCategoryActivity.this,subcategory,Toast.LENGTH_LONG).show();
-
+                                //Toast.makeText(SubCategoryActivity.this,subcategory,Toast.LENGTH_LONG).show();
+                                Intent intent=new Intent(SubCategoryActivity.this,SellerActivity.class).putExtra("subcategory",subcategory);
+                                startActivity(intent);
                             }
                         });
                         recyclerView.setHasFixedSize(false);
