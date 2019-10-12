@@ -140,7 +140,7 @@ public class CatalogActivity extends AppCompatActivity
                                             .putExtra("product", product));
                                 }
                             });
-                            recyclerView.setHasFixedSize(true);
+                            recyclerView.setHasFixedSize(false);
                             recyclerView.setLayoutManager(recyclerLayoutManager);
                             recyclerView.setAdapter(adapter);
 
@@ -179,10 +179,11 @@ public class CatalogActivity extends AppCompatActivity
         if (id == R.id.action_settings) {
             return true;
         } else if (id == R.id.action_filter) {
-            DialogFragment dialogFragment = new FilterDialogFragment(5000, 5, 10,
+            DialogFragment dialogFragment = new FilterDialogFragment(500, 10,
                     new FilterDialogFragment.OnApplyListener() {
                         @Override
                         public void OnApplyFilters(double rangeMin, double rangeMax) {
+                            PD.show();
                             FirebaseFirestore.getInstance()
                                     .collection(getResources().getText(R.string.products).toString())
                                     .whereGreaterThanOrEqualTo("cost", rangeMin)
@@ -202,9 +203,11 @@ public class CatalogActivity extends AppCompatActivity
                                                                 .putExtra("product", product));
                                                     }
                                                 });
-                                                recyclerView.setHasFixedSize(true);
+                                                recyclerView.setHasFixedSize(false);
                                                 recyclerView.setLayoutManager(recyclerLayoutManager);
                                                 recyclerView.setAdapter(adapter);
+
+
 
                                                 PD.dismiss();
                                             }
@@ -232,9 +235,11 @@ public class CatalogActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_Help) {
 
+        } else if (id == R.id.nav_seller) {
+            startActivity(new Intent(getApplicationContext(), SellerActivity.class));
         } else if (id == R.id.nav_additem) {
 
-        } else if (id == R.id.nav_viewrepo) {
+        } else if (id == R.id.nav_viewinv) {
 
         }
 

@@ -18,12 +18,10 @@ import com.appyvet.materialrangebar.RangeBar;
 public class FilterDialogFragment extends DialogFragment {
 
     public int priceMultiplier;
-    public int tickInterval;
     public int tickEnd;
 
-    public FilterDialogFragment(int priceMultiplier, int tickInterval, int tickEnd, OnApplyListener listener) {
+    public FilterDialogFragment(int priceMultiplier, int tickEnd, OnApplyListener listener) {
         this.priceMultiplier = priceMultiplier;
-        this.tickInterval = tickInterval;
         this.tickEnd = tickEnd;
         this.listener = listener;
     }
@@ -43,7 +41,7 @@ public class FilterDialogFragment extends DialogFragment {
         final View view = inflater.inflate(R.layout.dialog_filter, null);
 
         final RangeBar rangeBar = (RangeBar) view.findViewById(R.id.range_bar);
-        rangeBar.setTickInterval(tickInterval);
+        rangeBar.setTickInterval(1);
         rangeBar.setTickStart(0);
         rangeBar.setTickEnd(tickEnd);
 

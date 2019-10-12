@@ -42,6 +42,7 @@
         <activity android:name=".RegisterActivity" />
         <activity android:name=".ForgetAndChangePasswordActivity" />
         <activity android:name=".UserActivity" />
+        <activity android:name=".SellerActivity" />
         <activity android:name=".ProductActivity" />
         <activity android:name=".SearchActivity">
             <intent-filter>

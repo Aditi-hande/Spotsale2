@@ -7,7 +7,7 @@
         <item
             android:id="@+id/nav_categories"
             android:icon="@drawable/ic_menu_gallery"
-            android:title="Caterories" />
+            android:title="Categories" />
         <item
             android:id="@+id/nav_wishlist"
             android:icon="@drawable/ic_menu_wishlist"
@@ -25,13 +25,17 @@
     <item android:title="SELLER">
         <menu>
             <item
+                android:id="@+id/nav_seller"
+                android:icon="@drawable/ic_menu_wishlist"
+                android:title="Seller Dashboard" />
+            <item
                 android:id="@+id/nav_additem"
                 android:icon="@drawable/ic_menu_share"
                 android:title="Add Item" />
             <item
-                android:id="@+id/nav_viewrepo"
+                android:id="@+id/nav_viewinv"
                 android:icon="@drawable/ic_menu_share"
-                android:title="View Repository" />
+                android:title="View Inventory" />
         </menu>
     </item>
 
