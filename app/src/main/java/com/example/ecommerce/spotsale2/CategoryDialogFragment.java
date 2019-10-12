@@ -38,7 +38,7 @@ public class CategoryDialogFragment extends DialogFragment {
 
                     public void onCancelled( DatabaseError databaseError ) {
 
-                        //Toast.makeText(SellerActivity.this,"error",Toast.LENGTH_LONG).show();
+                        //Toast.makeText(CategoryActivity.this,"error",Toast.LENGTH_LONG).show();
                     }
                 });
 
