@@ -18,6 +18,7 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
         <activity android:name=".SubCategoryActivity" />
+        <activity android:name=".SellerActivity"></activity>
         <activity android:name=".CategoryActivity" />
         <activity android:name=".AddressActivity" />
         <activity android:name=".PaymentActivity" />
