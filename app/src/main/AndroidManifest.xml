@@ -6,6 +6,7 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.READ_SMS" />
     <uses-permission android:name="android.permission.RECEIVE_SMS" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application
@@ -16,10 +17,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".SubCategoryActivity"></activity>
+        <activity android:name=".SubCategoryActivity" />
         <activity android:name=".CategoryActivity" />
-        <activity android:name=".AddressActivity"></activity>
-        <activity android:name=".SellerActivity" />
+        <activity android:name=".AddressActivity" />
         <activity android:name=".PaymentActivity" />
         <activity android:name=".CartActivity" />
         <activity

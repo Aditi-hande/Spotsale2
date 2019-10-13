@@ -17,6 +17,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.ecommerce.spotsale2.DatabaseClasses.Cart;
+import com.example.ecommerce.spotsale2.DatabaseClasses.Users;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -34,6 +35,7 @@ public class LoginActivity extends AppCompatActivity {
     private Button btnSignUp, btnLogin;
     private ProgressDialog PD;
 
+
     @Override    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
@@ -42,6 +44,7 @@ public class LoginActivity extends AppCompatActivity {
         PD.setMessage("Loading...");
         PD.setCancelable(true);
         PD.setCanceledOnTouchOutside(false);
+        PD.show();
         auth = FirebaseAuth.getInstance();
 
         inputEmail = (EditText) findViewById(R.id.email);
@@ -57,7 +60,6 @@ public class LoginActivity extends AppCompatActivity {
                 try {
 
                     if (password.length() > 0 && email.length() > 0) {
-                        PD.show();
                         auth.signInWithEmailAndPassword(email, password)
                                 .addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
                                     @Override
@@ -69,18 +71,30 @@ public class LoginActivity extends AppCompatActivity {
                                                     Toast.LENGTH_LONG).show();
                                             Log.v("error", task.getResult().toString());
                                         } else {
-                                            Intent intent = new Intent(LoginActivity.this, CatalogActivity.class);
-                                            startActivity(intent);
-                                            finish();
+                                            FirebaseDatabase.getInstance().getReference()
+                                                    .child(getString(R.string.users))
+                                                    .child(auth.getCurrentUser().getUid())
+                                                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                                                        @Override
+                                                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                                            Intent intent = new Intent(LoginActivity.this, CatalogActivity.class)
+                                                                    .putExtra("user", dataSnapshot.getValue(Users.class))
+                                                                    .putExtra("activity", "LoginActivity");
+                                                            startActivity(intent);
+                                                            finish();
+                                                        }
+
+                                                        @Override
+                                                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                                                            Toast.makeText(LoginActivity.this, "Cancelled", Toast.LENGTH_SHORT).show();
+                                                        }
+                                                    });
                                         }
                                         PD.dismiss();
                                     }
                                 });
                     } else {
-                        Toast.makeText(
-                                LoginActivity.this,
-                                "Fill All Fields",
-                                Toast.LENGTH_LONG).show();
+                        Toast.makeText(LoginActivity.this,"Fill All Fields", Toast.LENGTH_LONG).show();
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -107,8 +121,24 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         if (auth.getCurrentUser() != null) {
-            startActivity(new Intent(LoginActivity.this, CatalogActivity.class));
-            finish();
+            FirebaseDatabase.getInstance().getReference()
+                    .child(getString(R.string.users))
+                    .child(auth.getCurrentUser().getUid())
+                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            Intent intent = new Intent(LoginActivity.this, CatalogActivity.class)
+                                    .putExtra("user", dataSnapshot.getValue(Users.class))
+                                    .putExtra("activity", "LoginActivity");
+                            startActivity(intent);
+                            finish();
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                            Toast.makeText(LoginActivity.this, "Cancelled", Toast.LENGTH_SHORT).show();
+                        }
+                    });
         }
         super.onResume();
     }

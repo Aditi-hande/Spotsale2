@@ -6,12 +6,21 @@
     android:orientation="vertical"
     android:padding="16dp">
 
+    <com.example.ecommerce.spotsale2.CustomImageView
+        android:id="@+id/profile_picture"
+        android:layout_width="@dimen/profile_image_width"
+        android:layout_height="@dimen/profile_image_height"
+        android:src="@mipmap/ic_launcher_round"/>
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="20dp" />
 
     <Button
         android:id="@+id/change_password_button"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dip"
+        android:layout_marginTop="20dp"
         android:background="@color/colorPrimary"
         android:text="Change Password"
         android:textColor="@color/white" />
@@ -21,7 +30,7 @@
         android:id="@+id/change_email_button"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dip"
+        android:layout_marginTop="20dp"
         android:background="@color/colorPrimary"
         android:text="Change Email"
         android:textColor="@color/white" />
@@ -31,7 +40,7 @@
         android:id="@+id/delete_user_button"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dip"
+        android:layout_marginTop="20dp"
         android:background="@color/colorPrimary"
         android:text="Delete User"
         android:textColor="@color/white" />
@@ -41,7 +50,7 @@
         android:id="@+id/sign_out_button"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dip"
+        android:layout_marginTop="20dp"
         android:background="@color/colorPrimary"
         android:text="Sign Out"
         android:textColor="@color/white" />

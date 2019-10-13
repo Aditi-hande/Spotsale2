@@ -10,4 +10,10 @@ public final class Constants {
             ".RESULT_DATA_KEY";
     public static final String LOCATION_DATA_EXTRA = PACKAGE_NAME +
             ".LOCATION_DATA_EXTRA";
+
+
+    /*    Travel Time Platform    */
+    public static final String API_ID = "6306e8b8a6b75f536864bb5c3045fe2e";
+    public static final String API_KEY = "6306e8b8a6b75f536864bb5c3045fe2e";
+
 }
