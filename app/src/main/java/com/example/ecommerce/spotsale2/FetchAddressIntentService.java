@@ -38,8 +38,8 @@ public class FetchAddressIntentService extends IntentService {
         ArrayList<Address> addressList = null;
         Geocoder geocoder = new Geocoder(this, Locale.getDefault());
         try {
-            if(location == null) {
-                addressList = (ArrayList<Address>) geocoder.getFromLocationName("Pune Institute of Computer Technology, Dhankawadi, Pune", 5);
+            if(location == null){
+                return;
             } else {
                 addressList = (ArrayList<Address>) geocoder.getFromLocation(
                         location.getLatitude(),

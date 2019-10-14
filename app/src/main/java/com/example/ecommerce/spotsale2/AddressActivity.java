@@ -152,34 +152,5 @@ public class AddressActivity extends AppCompatActivity {
 
         }
     }
-/*
-    protected void startGoogleMaps() {
 
-        try {
-            Intent intent = new Intent(android.content.Intent.ACTION_VIEW,
-                    Uri.parse("geo:" + destinationAddress.getLatitude()
-                            + "," + destinationAddress.getLongitude()
-                            + "?q=" + sourceAddress.getLatitude()
-                            + "," + sourceAddress.getLongitude()
-                            + "(" + "My Location" + ")"));
-            intent.setComponent(new ComponentName(
-                    "com.google.android.apps.maps",
-                    "com.google.android.maps.MapsActivity"));
-            getApplicationContext().startActivity(intent);
-        } catch (ActivityNotFoundException e) {
-
-            try {
-                getApplicationContext().startActivity(new Intent(
-                        Intent.ACTION_VIEW,
-                        Uri.parse("market://details?id=com.google.android.apps.maps")));
-            } catch (android.content.ActivityNotFoundException anfe) {
-                getApplicationContext().startActivity(new Intent(
-                        Intent.ACTION_VIEW,
-                        Uri.parse("http://play.google.com/store/apps/details?id=com.google.android.apps.maps")));
-            }
-
-            e.printStackTrace();
-        }
-    }
-*/
 }

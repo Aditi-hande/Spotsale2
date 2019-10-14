@@ -103,21 +103,16 @@ public class SellerActivity extends AppCompatActivity {
 
         FirebaseDatabase.getInstance().getReference()
                 .child("Inventories")
-                .child("inventory_id")
-                .equalTo(FirebaseAuth.getInstance().getCurrentUser().getUid())
-
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        if(dataSnapshot.hasChildren()){
-                            for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                                inventory = snapshot.getValue(Inventory.class);
-                            }
+                        if(dataSnapshot.exists()){
+                            inventory = dataSnapshot.getValue(Inventory.class);
                         } else {
                             DatabaseReference ref = FirebaseDatabase.getInstance().getReference()
                                     .child("Inventories".toString())
-                                    .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                                    .push();
+                                    .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
                             inventory = new Inventory();
                             inventory.setInventory_id(FirebaseAuth.getInstance().getCurrentUser().getUid());
                             ref.setValue(inventory);

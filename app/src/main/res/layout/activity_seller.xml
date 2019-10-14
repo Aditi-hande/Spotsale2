@@ -26,6 +26,6 @@
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
         android:onClick="Add_item"
-        android:src="@drawable/add_icon1" />
+        android:src="@drawable/ic_action_add" />
 
 </FrameLayout>
