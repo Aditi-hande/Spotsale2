@@ -16,7 +16,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".SellerActivity"></activity>
+        <activity android:name=".SellerProductActivity"></activity>
+        <activity android:name=".AddItemActivity" />
+        <activity android:name=".SellerActivity" />
         <activity android:name=".SubCategoryActivity" />
         <activity android:name=".CategoryActivity" />
         <activity android:name=".AddressActivity" />
