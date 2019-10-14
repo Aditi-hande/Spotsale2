@@ -3,6 +3,7 @@ package com.example.ecommerce.spotsale2;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.ProgressDialog;
@@ -14,7 +15,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
+import android.widget.TextClock;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -39,12 +42,12 @@ public class CartActivity extends AppCompatActivity {
     private Cart cart;
 
     List<String> addr_list = new ArrayList<String>();
-    RecyclerView recyclerView;
-
     ArrayList<Product> products;
 
+    RecyclerView recyclerView;
     RecyclerView.LayoutManager recyclerLayoutManager;
     CartAdapter adapter;
+    TextView cartSumText;
 
     private ProgressDialog PD;
 
@@ -70,7 +73,21 @@ public class CartActivity extends AppCompatActivity {
 
 
         recyclerView = (RecyclerView) findViewById(R.id.cart_recycler);
-        recyclerLayoutManager = new GridLayoutManager(this, 1);
+        recyclerLayoutManager = new LinearLayoutManager(this);
+        cartSumText = (TextView) findViewById(R.id.cart_sum);
+
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if(recyclerView.canScrollVertically(-1)){
+                    cartSumText.setElevation(16.0f);
+                } else {
+                    cartSumText.setElevation(0.0f);
+                }
+            }
+        });
+
         products = new ArrayList<Product>();
 
         PD.show();
@@ -105,7 +122,7 @@ public class CartActivity extends AppCompatActivity {
                 recyclerView.setLayoutManager(recyclerLayoutManager);
                 recyclerView.setAdapter(adapter);
 
-                ((TextView) findViewById(R.id.cart_sum)).setText("Total: " + cart.getTotal_sum());
+                cartSumText.setText("Total: " + cart.getTotal_sum());
 
                 PD.dismiss();
             }

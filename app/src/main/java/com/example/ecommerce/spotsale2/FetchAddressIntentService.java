@@ -4,9 +4,11 @@ import android.app.IntentService;
 import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
+import android.location.Location;
 import android.os.Bundle;
 import android.os.ResultReceiver;
 import android.text.TextUtils;
+import android.util.Log;
 
 import androidx.annotation.Nullable;
 
@@ -31,10 +33,19 @@ public class FetchAddressIntentService extends IntentService {
     protected void onHandleIntent(@Nullable Intent intent) {
         resultReceiver = intent.getParcelableExtra(Constants.RECEIVER);
 
-        List<Address> addressList = null;
+        Location location = intent.getParcelableExtra(Constants.LOCATION_DATA_EXTRA);
+
+        ArrayList<Address> addressList = null;
         Geocoder geocoder = new Geocoder(this, Locale.getDefault());
         try {
-            addressList = geocoder.getFromLocationName("Mont Vert Avion, Pashan, Pune", 1);
+            if(location == null) {
+                addressList = (ArrayList<Address>) geocoder.getFromLocationName("Pune Institute of Computer Technology, Dhankawadi, Pune", 5);
+            } else {
+                addressList = (ArrayList<Address>) geocoder.getFromLocation(
+                        location.getLatitude(),
+                        location.getLongitude(),
+                        1);
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -42,14 +53,10 @@ public class FetchAddressIntentService extends IntentService {
         if(addressList == null || addressList.size() == 0) {
             deliverResultToReceiver(Constants.FAILURE_RESULT, "No Address found");
         } else {
-            Address address = addressList.get(0);
-            ArrayList<String> addressFragments = new ArrayList<>();
 
-            for (int i=0; i<= address.getMaxAddressLineIndex(); i++) {
-                addressFragments.add(address.getAddressLine(i));
-            }
-            deliverResultToReceiver(Constants.SUCCESS_RESULT,
-                    TextUtils.join(System.getProperty("line.separator"), addressFragments));
+            Log.d("ADDRESSES", "addressList.size() : " + addressList.size());
+
+            deliverResultToReceiver(Constants.SUCCESS_RESULT, addressList);
         }
     }
 
@@ -58,6 +65,13 @@ public class FetchAddressIntentService extends IntentService {
         Bundle bundle = new Bundle();
         bundle.putString(Constants.RESULT_DATA_KEY, message);
         resultReceiver.send(resultCode, bundle);
+    }
 
+    private void deliverResultToReceiver(int resultCode, ArrayList<Address> messageList) {
+
+        Bundle bundle = new Bundle();
+        bundle.putParcelableArrayList(Constants.RESULT_DATA_KEY, messageList);
+        bundle.putInt("COUNT", messageList.size());
+        resultReceiver.send(resultCode, bundle);
     }
 }

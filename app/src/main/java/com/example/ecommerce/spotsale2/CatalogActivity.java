@@ -4,11 +4,15 @@ import android.app.ProgressDialog;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 
 import com.example.ecommerce.spotsale2.DatabaseClasses.Cart;
 import com.example.ecommerce.spotsale2.DatabaseClasses.Product;
+import com.example.ecommerce.spotsale2.DatabaseClasses.Users;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -24,6 +28,9 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.squareup.picasso.Picasso;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.SearchView;
@@ -38,6 +45,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -47,17 +55,30 @@ public class CatalogActivity extends AppCompatActivity
 
     private RecyclerView recyclerView;
     private RecyclerView.LayoutManager recyclerLayoutManager;
-    private ArrayList<Product> products;
     private ProductAdapter adapter;
 
     private ProgressDialog PD;
 
+    private Users user;
     private Cart activeCart;
+    private ArrayList<Product> products;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_catalog);
+
+        /*    Initialize Progress Dialog    */
+        PD = new ProgressDialog(this);
+        PD.setMessage("Loading...");
+        PD.setCancelable(true);
+        PD.setCanceledOnTouchOutside(false);
+        PD.show();
+
+
+        /*    Initialize User    */
+        Log.d("INCOMING_INTENT", getIntent().getStringExtra("activity"));
+        user = (Users) getIntent().getSerializableExtra("user");
 
         /*    Initialize Toolbar    */
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -75,12 +96,14 @@ public class CatalogActivity extends AppCompatActivity
             }
         });
 
+
         /*    Initialize Drawer Layout    */
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
+
 
         /*    Initialize Navigation View for Drawer Layout    */
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
@@ -92,26 +115,36 @@ public class CatalogActivity extends AppCompatActivity
             }
         });
         ((TextView) navigationView.getHeaderView(0).findViewById(R.id.nav_header_name))
-                .setText(FirebaseAuth.getInstance().getCurrentUser().getDisplayName());
+                .setText(user.getUsername());
         ((TextView) navigationView.getHeaderView(0).findViewById(R.id.nav_header_email))
-                .setText(FirebaseAuth.getInstance().getCurrentUser().getEmail());
+                .setText(user.getEmail());
 
-        /*    Initialize Progress Dialog    */
-        PD = new ProgressDialog(this);
-        PD.setMessage("Loading...");
-        PD.setCancelable(true);
-        PD.setCanceledOnTouchOutside(false);
+        final ImageView profileImageView = (ImageView) navigationView.getHeaderView(0).findViewById(R.id.nav_header_image);
+        StorageReference ref = FirebaseStorage.getInstance().getReference()
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid() + "/profile_pic.jpg");
+        ref.getDownloadUrl()
+                .addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        Picasso.get().load(uri).into(profileImageView);
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        profileImageView.setImageResource(R.mipmap.ic_launcher_round);
+                    }
+                });
+
 
         /*    Initialize Recycler View    */
         recyclerView = (RecyclerView) findViewById(R.id.recylcer);
         recyclerLayoutManager = new GridLayoutManager(this, 1);
 
         if(products == null) {
-            Log.d("APPLY_FAIL", "products is null");
             products = new ArrayList<Product>();
-            Log.d("APPLY_FAIL", products.toString());
         }
-        PD.show();
+
 
         /*    Initialize Search bar    */
         SearchView searchView = (SearchView) findViewById(R.id.search_view);
@@ -120,6 +153,7 @@ public class CatalogActivity extends AppCompatActivity
                         .getSearchableInfo(getComponentName())
         );
         searchView.setIconifiedByDefault(false);
+
 
         /*    Get data from Database to populate Recycler View    */
         if(products.isEmpty()) {
