@@ -25,6 +25,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -70,9 +71,12 @@ public class SellerProductActivity extends AppCompatActivity {
         ((Button) findViewById(R.id.add_to_inventorybtn)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DatabaseReference ref = FirebaseDatabase.getInstance().getReference()
+                DatabaseReference invRef = FirebaseDatabase.getInstance().getReference()
                     .child("Inventories".toString())
                     .child(inventory.getInventory_id());
+
+                DocumentReference prodRef = FirebaseFirestore.getInstance().collection(getString(R.string.products))
+                        .document(product.getItem_id());
 
                 final int qty = Integer.parseInt( qtyView.getText().toString());
                 final int sellingcost= Integer.parseInt(sellingcostView.getText().toString());
@@ -82,15 +86,18 @@ public class SellerProductActivity extends AppCompatActivity {
                     if (inventory.getProductList() == null) {
                         inventory.setProductList(new ArrayList<Inventory.ProductRef>());
                     }
-                    //product.setCost(sellingcost);
-                    Log.d("INVENTORY", "getProductList: " + inventory.getProductList().toString());
-                    inventory.getProductList().add(new Inventory.ProductRef(product.getItem_id(), 1, sellingcost));
-                    Log.d("INVENTORY", "getProductList: " + inventory.getProductList().toString());
+                    inventory.getProductList().add(new Inventory.ProductRef(product.getItem_id(), 1, sellingcost, qty));
                     inventory.setTotal_items(inventory.getTotal_items() + qty);
 
-                    ref.setValue(inventory);
+                    invRef.setValue(inventory);
 
+                    if(product.getSellers() == null) {
+                        product.setSellers(new ArrayList<Product.SellerDesc>());
+                    }
+                    product.getSellers().add(new Product.SellerDesc(FirebaseAuth.getInstance().getCurrentUser().getUid(), sellingcost, 1));
+                    product.setQty(product.getQty() + qty);
 
+                    prodRef.set(product);
 
                     Snackbar.make(v, "Added to Inventory", Snackbar.LENGTH_LONG).show();
                 } else{
