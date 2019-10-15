@@ -10,6 +10,7 @@ public class Inventory implements Serializable {
     private int total_items;
     private List<Product> productList;
 
+
     public Inventory(String inventory_id, int total_items, List<Product> productList) {
         this.inventory_id = inventory_id;
         this.total_items = total_items;

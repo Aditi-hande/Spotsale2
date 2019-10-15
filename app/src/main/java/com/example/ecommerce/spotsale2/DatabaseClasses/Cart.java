@@ -9,7 +9,7 @@ public class Cart implements Serializable {
 
     private String cart_id ;
     private int total_items;
-    private List<Product> productList;
+    private List<String> productList;
     private double total_sum;
     public enum Status { ACTIVE, DELIVERED, PENDING }
     private Status status;
@@ -19,7 +19,7 @@ public class Cart implements Serializable {
         productList = new ArrayList<>();
     }
 
-    public Cart(String cart_id, int total_items, List<Product> productList, double total_sum, Status status) {
+    public Cart(String cart_id, int total_items, List<String> productList, double total_sum, Status status) {
         this.cart_id = cart_id;
         this.total_items = total_items;
         this.productList = productList;
@@ -27,12 +27,20 @@ public class Cart implements Serializable {
         this.status = status;
     }
 
-    public List<Product> getProductList() {
+    public List<String> getProductList() {
         return productList;
     }
 
-    public void setProductList(List<Product> productList) {
+    public void setProductList(List<String> productList) {
         this.productList = productList;
+    }
+
+    public void fromProductList(List<Product> productList) {
+        this.productList = new ArrayList<>();
+        for (Product product :
+                productList) {
+            this.productList.add(product.getItem_id());
+        }
     }
 
     public String getCart_id() {
