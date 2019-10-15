@@ -9,8 +9,11 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.location.Address;
 //import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.ResultReceiver;
@@ -19,23 +22,15 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.example.ecommerce.spotsale2.DatabaseClasses.Location;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationAvailability;
-import com.google.android.gms.location.LocationCallback;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationResult;
-import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
@@ -43,6 +38,9 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.storage.FirebaseStorage;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
 import java.util.ArrayList;
 
@@ -57,10 +55,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private AddressResultReceiver resultReceiver;
     private ArrayList<Address> addresses;
 
-    private Address sourceAddress, destinationAddress;
+    private Address sourceAddress, destAddress;
     private DocumentReference sourceRef, destRef;
-
-    private Marker sourceMarker, destMarker;
+    private PicassoMarker sourceMarker, destMarker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,11 +100,56 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
 
+        FirebaseStorage.getInstance().getReference()
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid() + "/profile_pic.jpg")
+                .getDownloadUrl()
+                .addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        if(sourceMarker == null) {
+                            sourceMarker = new PicassoMarker(mMap.addMarker(new MarkerOptions().position(new LatLng(0,0)).title("You").snippet("This is you")));
+                        }
+                        Picasso.get().load(uri)
+                                .resize(120, 160)
+                                .into(sourceMarker);
+                    }
+                });
+
+        FirebaseStorage.getInstance().getReference()
+                .child("ljf6IUFgS6USd3EulemhEFyTWXe2" + "/profile_pic.jpg")
+                .getDownloadUrl()
+                .addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        if(destMarker == null) {
+                            destMarker = new PicassoMarker(mMap.addMarker(new MarkerOptions().position(new LatLng(0,0)).title("You").snippet("This is you")));
+                        }
+                        Picasso.get().load(uri)
+                                .resize(120,160)
+                                .into(destMarker);
+                    }
+                });
+
     }
 
     @Override
     protected void onStart() {
         super.onStart();
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
+                    locationRequestCode);
+        } else {
+            startLocationService();
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -132,6 +174,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
+                        stopService(new Intent(MapsActivity.this, LocationMonitoringService.class));
                         MapsActivity.super.onBackPressed();
                     }
                 })
@@ -214,27 +257,71 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     LatLng source = new LatLng(sourceAddress.getLatitude(), sourceAddress.getLongitude());
                     bounds.include(source);
                     if (sourceMarker == null) {
-                        sourceMarker = mMap.addMarker(new MarkerOptions().position(source).title("You").snippet("This is you"));
+                        sourceMarker = new PicassoMarker(mMap.addMarker(new MarkerOptions().position(source).title("You").snippet("This is you")));
                     } else {
-                        sourceMarker.setPosition(source);
+                        sourceMarker.mMarker.setPosition(source);
                     }
                 } else {
-                    destinationAddress = addresses.get(0);
-                    LatLng dest = new LatLng(destinationAddress.getLatitude(), destinationAddress.getLongitude());
+                    destAddress = addresses.get(0);
+                    LatLng dest = new LatLng(destAddress.getLatitude(), destAddress.getLongitude());
                     bounds.include(dest);
                     if (destMarker == null) {
-                        destMarker = mMap.addMarker(new MarkerOptions().position(dest).title("Them").snippet("This is Them"));
+                        destMarker = new PicassoMarker(mMap.addMarker(new MarkerOptions().position(dest).title("Them").snippet("This is Them")));
                     } else {
-                        sourceMarker.setPosition(dest);
+                        destMarker.mMarker.setPosition(dest);
                     }
                 }
-                mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds.build(), 10));
+
+                if(sourceAddress != null && destAddress != null) {
+                    mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds.build(), 120));
+                } else if(sourceAddress != null) {
+                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(sourceAddress.getLatitude(), sourceAddress.getLongitude()), 16.0f));
+                } else if(destAddress != null) {
+                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(destAddress.getLatitude(), destAddress.getLongitude()), 16.0f));
+                }
 
                 Log.d("ADDRESSES", "received addreses count:" + resultData.getInt("COUNT"));
             } else {
                 Toast.makeText(MapsActivity.this, resultData.getString(Constants.RESULT_DATA_KEY), Toast.LENGTH_LONG).show();
             }
 
+        }
+
+    }
+
+    public static class PicassoMarker implements Target {
+        Marker mMarker;
+
+        PicassoMarker(Marker marker) {
+            mMarker = marker;
+        }
+
+        @Override
+        public int hashCode() {
+            return mMarker.hashCode();
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if(o instanceof PicassoMarker) {
+                Marker marker = ((PicassoMarker) o).mMarker;
+                return mMarker.equals(marker);
+            } else {
+                return false;
+            }
+        }
+
+        @Override
+        public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+            mMarker.setIcon(BitmapDescriptorFactory.fromBitmap(bitmap));
+        }
+
+        @Override
+        public void onBitmapFailed(Exception e, Drawable errorDrawable) {
+        }
+
+        @Override
+        public void onPrepareLoad(Drawable placeHolderDrawable) {
         }
     }
 

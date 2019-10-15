@@ -10,15 +10,19 @@ public class Inventory implements Serializable {
     private int total_items;
     private List<ProductRef> productList;
 
-    public static class ProductRef {
+    public static class ProductRef implements Serializable {
         String item_id;
         int age;
         int cost;
+        int qty;
 
-        public ProductRef(String item_id, int age, int cost) {
+        public ProductRef() {}
+
+        public ProductRef(String item_id, int age, int cost, int qty) {
             this.item_id = item_id;
             this.age = age;
             this.cost = cost;
+            this.qty = qty;
         }
 
         public String getItem_id() {
@@ -43,6 +47,14 @@ public class Inventory implements Serializable {
 
         public void setCost(int cost) {
             this.cost = cost;
+        }
+
+        public int getQty() {
+            return qty;
+        }
+
+        public void setQty(int qty) {
+            this.qty = qty;
         }
     }
 

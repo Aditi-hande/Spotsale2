@@ -14,7 +14,6 @@ public class Cart implements Serializable {
     public enum Status { ACTIVE, DELIVERED, PENDING }
     private Status status;
 
-
     public Cart(){
         productList = new ArrayList<>();
     }
