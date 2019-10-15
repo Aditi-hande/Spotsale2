@@ -7,10 +7,11 @@ import android.os.Bundle;
 import android.widget.Toast;
 
 import com.example.ecommerce.spotsale2.DatabaseClasses.Inventory;
+import com.example.ecommerce.spotsale2.DatabaseClasses.Product;
 
 public class AddItemActivity extends AppCompatActivity {
 
-    private Inventory inventory;
+    private Product product;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

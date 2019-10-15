@@ -72,9 +72,9 @@ public class ProductActivity extends AppCompatActivity {
                         .child(cart.getCart_id());
 
                 if(cart.getProductList() == null){
-                    cart.setProductList(new ArrayList<Product>());
+                    cart.setProductList(new ArrayList<String>());
                 }
-                cart.getProductList().add(product);
+                cart.getProductList().add(product.getItem_id());
                 cart.setTotal_sum(cart.getTotal_sum() + product.getCost());
                 cart.setTotal_items(cart.getTotal_items() + 1);
 

@@ -16,6 +16,8 @@ public class Product implements Serializable {
     private List<String> sellers;
     private String imageUrl;
 
+
+
     public Product(String cat_id, String item_id, int qty, int cost, String name, String description, String brand, List<String> sellers, String imageUrl) {
         this.cat_id = cat_id;
         this.item_id = item_id;
