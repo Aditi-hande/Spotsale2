@@ -61,9 +61,8 @@ public class SearchActivity extends AppCompatActivity {
 
     private void search(String query) {
 
-        FirebaseFirestore.getInstance().collection(getString(R.string.products))
-                .where
-
+        FirebaseFirestore.getInstance().collection(getString(R.string.products));
+/*
         for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
             products.add(snapshot.getValue(Product.class));
             adapter = new ProductAdapter(products, new ProductAdapter.OnItemClickListener() {
@@ -76,6 +75,7 @@ public class SearchActivity extends AppCompatActivity {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(recyclerLayoutManager);
         recyclerView.setAdapter(adapter);
+        */
 
         progressDialog.dismiss();
     }
