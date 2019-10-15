@@ -104,14 +104,14 @@ public class CartActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     products.add(snapshot.getValue(Product.class));
-                    cart.setProductList(products);
+                    cart.fromProductList(products);
                 }
                 adapter = new CartAdapter(products, new CartAdapter.OnItemClickListener() {
                     @Override
                     public void onItemClick(final Product product, View view) {
                         products.remove(product);
                         Log.d("DeleteFromCart", products.toString());
-                        cart.setProductList(products);
+                        cart.fromProductList(products);
                         cart.setTotal_sum(cart.getTotal_sum() - product.getCost());
                         cart.setTotal_items(cart.getTotal_items() - 1);
                         cartRef.setValue(cart);
