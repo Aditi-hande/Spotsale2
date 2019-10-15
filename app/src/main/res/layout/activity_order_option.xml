@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_height="match_parent"
+    tools:context=".OrderOptionActivity">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Enter Your Choice"
+        android:textStyle="bold"
+        android:textSize="25dp"
+        android:gravity="center"
+        android:paddingTop="10dp"/>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/active"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:gravity="center"
+        android:paddingVertical="10dp"
+        android:paddingTop="60dp"
+        android:text="ACTIVE CART" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/pending"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:gravity="center"
+        android:paddingVertical="10dp"
+        android:paddingTop="60dp"
+        android:text="PENDING CART" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/delivered"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:gravity="center"
+        android:paddingVertical="10dp"
+        android:paddingTop="60dp"
+        android:text="DELIVERED CART" />
+
+
+</LinearLayout>
