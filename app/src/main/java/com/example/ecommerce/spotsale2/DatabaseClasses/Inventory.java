@@ -14,6 +14,36 @@ public class Inventory implements Serializable {
         String item_id;
         int age;
         int cost;
+
+        public ProductRef(String item_id, int age, int cost) {
+            this.item_id = item_id;
+            this.age = age;
+            this.cost = cost;
+        }
+
+        public String getItem_id() {
+            return item_id;
+        }
+
+        public void setItem_id(String item_id) {
+            this.item_id = item_id;
+        }
+
+        public int getAge() {
+            return age;
+        }
+
+        public void setAge(int age) {
+            this.age = age;
+        }
+
+        public int getCost() {
+            return cost;
+        }
+
+        public void setCost(int cost) {
+            this.cost = cost;
+        }
     }
 
     public Inventory(String inventory_id, int total_items, List<ProductRef> productList) {

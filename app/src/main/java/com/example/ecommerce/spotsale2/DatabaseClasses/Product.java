@@ -13,12 +13,16 @@ public class Product implements Serializable {
     private String name;
     private String description;
     private String brand;
-    private List<String> sellers;
+    private List<SellerDesc> sellers;
     private String imageUrl;
 
+    public static class SellerDesc {
+        String user_id;
+        int cost;
+        int age;
+    }
 
-
-    public Product(String cat_id, String item_id, int qty, int cost, String name, String description, String brand, List<String> sellers, String imageUrl) {
+    public Product(String cat_id, String item_id, int qty, int cost, String name, String description, String brand, List<SellerDesc> sellers, String imageUrl) {
         this.cat_id = cat_id;
         this.item_id = item_id;
         this.qty = qty;
@@ -54,11 +58,11 @@ public class Product implements Serializable {
         this.brand = brand;
     }
 
-    public List<String> getSellers() {
+    public List<SellerDesc> getSellers() {
         return sellers;
     }
 
-    public void setSellers(List<String> sellers) {
+    public void setSellers(List<SellerDesc> sellers) {
         this.sellers = sellers;
     }
 

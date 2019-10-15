@@ -80,11 +80,11 @@ public class SellerProductActivity extends AppCompatActivity {
 
                 if(mrp >= sellingcost) {
                     if (inventory.getProductList() == null) {
-                        inventory.setProductList(new ArrayList<Product>());
+                        inventory.setProductList(new ArrayList<Inventory.ProductRef>());
                     }
-                    product.setCost(sellingcost);
+                    //product.setCost(sellingcost);
                     Log.d("INVENTORY", "getProductList: " + inventory.getProductList().toString());
-                    inventory.getProductList().add(product);
+                    inventory.getProductList().add(new Inventory.ProductRef(product.getItem_id(), 1, sellingcost));
                     Log.d("INVENTORY", "getProductList: " + inventory.getProductList().toString());
                     inventory.setTotal_items(inventory.getTotal_items() + qty);
 
