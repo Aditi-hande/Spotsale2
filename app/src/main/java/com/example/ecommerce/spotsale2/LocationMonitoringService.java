@@ -2,10 +2,15 @@ package com.example.ecommerce.spotsale2;
 
 import android.Manifest;
 import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
@@ -80,6 +85,7 @@ public class LocationMonitoringService extends Service
 
         } else {
             LocationServices.getFusedLocationProviderClient(this).requestLocationUpdates(locationRequest, locationCallback, null);
+            showForegroundNotification("Location Service is ON");
         }
     }
 
@@ -92,7 +98,7 @@ public class LocationMonitoringService extends Service
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
         Log.d(TAG, "onConnectionFailed: FAILED");
-        Toast.makeText(this, "Connected Failed", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Connected Failed", Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -101,6 +107,13 @@ public class LocationMonitoringService extends Service
         LocationServices.getFusedLocationProviderClient(this).removeLocationUpdates(locationCallback);
 
         googleApiClient.disconnect();
+
+        Toast.makeText(this, "Location Services OFF", Toast.LENGTH_LONG).show();
+
+        FirebaseFirestore.getInstance().collection("locations")
+                .document(FirebaseAuth.getInstance().getCurrentUser().getUid()).delete();
+
+        Globals.isLocationMonitoringServiceRunning = false;
 
         super.onDestroy();
     }
@@ -123,7 +136,7 @@ public class LocationMonitoringService extends Service
             }
         }
     }
-    /*
+
     private void showForegroundNotification(String contentText) {
         // Create intent that will bring our app to the front, as if it was tapped in the app
         // launcher
@@ -138,13 +151,35 @@ public class LocationMonitoringService extends Service
                 showTaskIntent,
                 PendingIntent.FLAG_UPDATE_CURRENT);
 
-        Notification notification = new Notification.Builder(getApplicationContext())
-                .setContentTitle(getString(R.string.app_name))
-                .setContentText(contentText)
-                .setSmallIcon(R.mipmap.ic_logo_round)
-                .setWhen(System.currentTimeMillis())
-                .setContentIntent(contentIntent)
-                .build();
-        startForeground(NOTIFICATION_ID, notification);
-    }*/
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+
+            String NOTIFICATION_CHANNEL_ID = "com.example.ecommerce.spotsale2";
+            String channelName = "Location Service";
+            NotificationChannel chan = new NotificationChannel(NOTIFICATION_CHANNEL_ID, channelName, NotificationManager.IMPORTANCE_NONE);
+            chan.setLightColor(Color.BLUE);
+            chan.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
+            NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            assert manager != null;
+            manager.createNotificationChannel(chan);
+
+            Notification.Builder notifBuilder = new Notification.Builder(getApplicationContext(), NOTIFICATION_CHANNEL_ID)
+                    .setContentTitle(getString(R.string.app_name))
+                    .setContentText(contentText)
+                    .setSmallIcon(R.mipmap.ic_logo_round)
+                    .setWhen(System.currentTimeMillis())
+                    .setContentIntent(contentIntent);
+            startForeground(NOTIFICATION_ID, notifBuilder.build());
+
+        } else {
+
+            Notification.Builder notifBuilder = new Notification.Builder(getApplicationContext())
+                    .setContentTitle(getString(R.string.app_name))
+                    .setContentText(contentText)
+                    .setSmallIcon(R.mipmap.ic_logo_round)
+                    .setWhen(System.currentTimeMillis())
+                    .setContentIntent(contentIntent);
+            startForeground(NOTIFICATION_ID, notifBuilder.build());
+
+        }
+    }
 }

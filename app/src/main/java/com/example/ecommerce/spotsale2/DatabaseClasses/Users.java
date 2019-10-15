@@ -9,7 +9,7 @@ public class Users implements Serializable {
     private String address;
     private String email;
 
-    public Users(){}
+    public Users() {}
 
     public Users(String username, String address, String email) {
         this.username = username;

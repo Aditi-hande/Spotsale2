@@ -93,6 +93,7 @@ public class LoginActivity extends AppCompatActivity {
                                                         @Override
                                                         public void onCancelled(@NonNull DatabaseError databaseError) {
                                                             Toast.makeText(LoginActivity.this, "Cancelled", Toast.LENGTH_SHORT).show();
+                                                            PD.dismiss();
                                                         }
                                                     });
                                         }
@@ -125,6 +126,7 @@ public class LoginActivity extends AppCompatActivity {
 
     @Override
     protected void onResume() {
+        PD.show();
         if (auth.getCurrentUser() != null) {
             FirebaseDatabase.getInstance().getReference()
                     .child(getString(R.string.users))

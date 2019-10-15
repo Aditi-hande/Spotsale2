@@ -10,10 +10,12 @@ public class Inventory implements Serializable {
     private int total_items;
     private List<ProductRef> productList;
 
-    public static class ProductRef {
+    public static class ProductRef implements Serializable {
         String item_id;
         int age;
         int cost;
+
+        public ProductRef() {}
 
         public ProductRef(String item_id, int age, int cost) {
             this.item_id = item_id;

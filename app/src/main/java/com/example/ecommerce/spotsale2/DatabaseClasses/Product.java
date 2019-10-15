@@ -21,7 +21,7 @@ public class Product implements Serializable {
         int cost;
         int age;
 
-
+        public SellerDesc() {}
 
         public SellerDesc(String user_id, int cost, int age) {
             this.user_id = user_id;

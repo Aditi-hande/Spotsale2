@@ -121,6 +121,21 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
+                    locationRequestCode);
+        } else {
+            startLocationService();
+        }
+    }
+
+    @Override
     public void onBackPressed() {
         AlertDialog.Builder alertBuilder = new AlertDialog.Builder(this)
                 .setNeutralButton("No", new DialogInterface.OnClickListener() {
@@ -132,6 +147,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
+                        stopService(new Intent(MapsActivity.this, LocationMonitoringService.class));
                         MapsActivity.super.onBackPressed();
                     }
                 })
@@ -228,7 +244,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         sourceMarker.setPosition(dest);
                     }
                 }
-                mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds.build(), 10));
+
+                if(sourceAddress != null && destinationAddress != null) {
+                    mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds.build(), 120));
+                } else if(sourceAddress != null) {
+                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(sourceAddress.getLatitude(), sourceAddress.getLongitude()), 16.0f));
+                } else if(destinationAddress != null) {
+                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(destinationAddress.getLatitude(), destinationAddress.getLongitude()), 16.0f));
+                }
 
                 Log.d("ADDRESSES", "received addreses count:" + resultData.getInt("COUNT"));
             } else {
