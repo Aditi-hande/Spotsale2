@@ -34,7 +34,7 @@ public class FetchAddressIntentService extends IntentService {
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
         resultReceiver = intent.getParcelableExtra(Constants.RECEIVER);
-
+        boolean isSource = intent.getBooleanExtra(Constants.DOCUMENT_REFERENCE, true);
         Location location = (Location) intent.getSerializableExtra(Constants.LOCATION_DATA_EXTRA);
 
         ArrayList<Address> addressList = null;
@@ -53,26 +53,28 @@ public class FetchAddressIntentService extends IntentService {
         }
 
         if(addressList == null || addressList.size() == 0) {
-            deliverResultToReceiver(Constants.FAILURE_RESULT, "No Address found");
+            deliverResultToReceiver(Constants.FAILURE_RESULT, isSource, "No Address found");
         } else {
 
             Log.d("ADDRESSES", "addressList.size() : " + addressList.size());
 
-            deliverResultToReceiver(Constants.SUCCESS_RESULT, addressList);
+            deliverResultToReceiver(Constants.SUCCESS_RESULT, isSource, addressList);
         }
     }
 
-    private void deliverResultToReceiver(int resultCode, String message) {
+    private void deliverResultToReceiver(int resultCode, boolean isSource, String message) {
 
         Bundle bundle = new Bundle();
         bundle.putString(Constants.RESULT_DATA_KEY, message);
+        bundle.putBoolean(Constants.DOCUMENT_REFERENCE, isSource);
         resultReceiver.send(resultCode, bundle);
     }
 
-    private void deliverResultToReceiver(int resultCode, ArrayList<Address> messageList) {
+    private void deliverResultToReceiver(int resultCode, boolean isSource, ArrayList<Address> messageList) {
 
         Bundle bundle = new Bundle();
         bundle.putParcelableArrayList(Constants.RESULT_DATA_KEY, messageList);
+        bundle.putBoolean(Constants.DOCUMENT_REFERENCE, isSource);
         bundle.putInt("COUNT", messageList.size());
         resultReceiver.send(resultCode, bundle);
     }

@@ -83,13 +83,25 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     Log.d("SnapshotListener", "Listen Failed");
                 }
                 if(documentSnapshot != null && documentSnapshot.exists()) {
-                    startIntentService(documentSnapshot.toObject(Location.class));
+                    startIntentService(documentSnapshot.toObject(Location.class), true);
                 }
             }
         });
 
         destRef = FirebaseFirestore.getInstance().collection("locations")
-                .document("");
+                .document("ljf6IUFgS6USd3EulemhEFyTWXe2");
+
+        destRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
+                if(e != null) {
+                    Log.d("SnapshotListener", "Listen Failed");
+                }
+                if(documentSnapshot != null && documentSnapshot.exists()) {
+                    startIntentService(documentSnapshot.toObject(Location.class), false);
+                }
+            }
+        });
 
     }
 
@@ -152,10 +164,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
-    protected void startIntentService(Location location) {
+    protected void startIntentService(Location location, boolean isSource) {
         Intent intent = new Intent(this, FetchAddressIntentService.class);
         intent.putExtra(Constants.RECEIVER, resultReceiver);
         intent.putExtra(Constants.LOCATION_DATA_EXTRA, location);
+        intent.putExtra(Constants.DOCUMENT_REFERENCE, isSource);
         startService(intent);
     }
 
@@ -195,18 +208,27 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 if (addresses == null) {
                     addresses = new ArrayList<>();
                     return;
-
                 }
-                sourceAddress = addresses.get(0);
-                LatLng source = new LatLng(sourceAddress.getLatitude(), sourceAddress.getLongitude());
-                bounds.include(source);
-                if (sourceMarker == null) {
-                    sourceMarker = mMap.addMarker(new MarkerOptions().position(source).title("You").snippet("This is you"));
+                if(resultData.getBoolean(Constants.DOCUMENT_REFERENCE)) {
+                    sourceAddress = addresses.get(0);
+                    LatLng source = new LatLng(sourceAddress.getLatitude(), sourceAddress.getLongitude());
+                    bounds.include(source);
+                    if (sourceMarker == null) {
+                        sourceMarker = mMap.addMarker(new MarkerOptions().position(source).title("You").snippet("This is you"));
+                    } else {
+                        sourceMarker.setPosition(source);
+                    }
                 } else {
-                    sourceMarker.setPosition(source);
+                    destinationAddress = addresses.get(0);
+                    LatLng dest = new LatLng(destinationAddress.getLatitude(), destinationAddress.getLongitude());
+                    bounds.include(dest);
+                    if (destMarker == null) {
+                        destMarker = mMap.addMarker(new MarkerOptions().position(dest).title("Them").snippet("This is Them"));
+                    } else {
+                        sourceMarker.setPosition(dest);
+                    }
                 }
-                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(source, 16.0f));
-                //mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds.build(), 10));
+                mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds.build(), 10));
 
                 Log.d("ADDRESSES", "received addreses count:" + resultData.getInt("COUNT"));
             } else {
