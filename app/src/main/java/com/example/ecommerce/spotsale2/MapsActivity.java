@@ -19,10 +19,8 @@ import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationAvailability;
 import com.google.android.gms.location.LocationCallback;
-import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
@@ -37,7 +35,9 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 
@@ -56,6 +56,7 @@ public class MapsActivity extends FragmentActivity
     private ArrayList<Address> addresses;
 
     private Address sourceAddress, destinationAddress;
+    private DocumentReference sourceRef, destRef;
 
     private Marker sourceMarker, destMarker;
 
@@ -87,6 +88,17 @@ public class MapsActivity extends FragmentActivity
     }
 
     @Override
+    protected void onStop() {
+        super.onStop();
+
+        if(googleApiClient != null && googleApiClient.isConnected()) {
+            LocationServices.getFusedLocationProviderClient(this).removeLocationUpdates(locationCallback);
+            googleApiClient.disconnect();
+        }
+        sourceRef.delete();
+    }
+
+    @Override
     protected void onPause() {
         super.onPause();
 
@@ -94,6 +106,7 @@ public class MapsActivity extends FragmentActivity
             LocationServices.getFusedLocationProviderClient(this).removeLocationUpdates(locationCallback);
             googleApiClient.disconnect();
         }
+        sourceRef.delete();
     }
 
     @Override
@@ -170,6 +183,10 @@ public class MapsActivity extends FragmentActivity
         Toast.makeText(this, "Location Updates ON", Toast.LENGTH_LONG).show();
 
         LocationServices.getFusedLocationProviderClient(this).requestLocationUpdates(locationRequest, locationCallback, null);
+
+        sourceRef = FirebaseFirestore.getInstance().collection("locations")
+                .document(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        //destRef = FirebaseFirestore.getInstance().collection("locations").document(seller.getUID());
     }
 
     @Override
@@ -201,6 +218,8 @@ public class MapsActivity extends FragmentActivity
 
     class AddressResultReceiver extends ResultReceiver {
 
+        LatLngBounds.Builder bounds = new LatLngBounds.Builder();
+
         public AddressResultReceiver(Handler handler) {
             super(handler);
         }
@@ -226,11 +245,10 @@ public class MapsActivity extends FragmentActivity
                     Log.d("ADDRESSES", "Coords: " + address.getLatitude() + "," + address.getLongitude());
                 }
 
-                LatLngBounds.Builder bounds = new LatLngBounds.Builder();
-
-                if(sourceAddress == null){
+                //if(sourceAddress == null){
                     sourceAddress = addresses.get(0);
                     LatLng source = new LatLng(sourceAddress.getLatitude(), sourceAddress.getLongitude());
+                    sourceRef.set(source);
                     bounds.include(source);
                     if(sourceMarker == null) {
                         sourceMarker = mMap.addMarker(new MarkerOptions().position(source).title("You"));
@@ -238,7 +256,7 @@ public class MapsActivity extends FragmentActivity
                         sourceMarker.setPosition(source);
                     }
                     mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(source, 16.0f));
-                } else {
+                /*} else {
                     destinationAddress = addresses.get(0);
                     LatLng dest = new LatLng(destinationAddress.getLatitude(), destinationAddress.getLongitude());
                     bounds.include(dest);
@@ -248,7 +266,7 @@ public class MapsActivity extends FragmentActivity
                         destMarker.setPosition(dest);
                     }
                     mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds.build(), 10));
-                }
+                }*/
 
                 Log.d("ADDRESSES", "received addreses count:" + resultData.getInt("COUNT"));
             } else {
@@ -258,4 +276,8 @@ public class MapsActivity extends FragmentActivity
         }
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
 }

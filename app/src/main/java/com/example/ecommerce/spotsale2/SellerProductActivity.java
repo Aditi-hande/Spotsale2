@@ -78,7 +78,7 @@ public class SellerProductActivity extends AppCompatActivity {
                 final int sellingcost= Integer.parseInt(sellingcostView.getText().toString());
 
 
-                if(mrp > sellingcost) {
+                if(mrp >= sellingcost) {
                     if (inventory.getProductList() == null) {
                         inventory.setProductList(new ArrayList<Product>());
                     }

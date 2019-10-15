@@ -18,6 +18,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 
@@ -59,30 +60,23 @@ public class SearchActivity extends AppCompatActivity {
     }
 
     private void search(String query) {
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("Products");
-        databaseReference.orderByValue().equalTo(query).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    products.add(snapshot.getValue(Product.class));
-                    adapter = new ProductAdapter(products, new ProductAdapter.OnItemClickListener() {
-                        @Override
-                        public void onItemClick(Product product) {
-                            startActivity(new Intent(getApplicationContext(), ProductActivity.class).putExtra("product", product));
-                        }
-                    });
+
+        FirebaseFirestore.getInstance().collection(getString(R.string.products))
+                .where
+
+        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+            products.add(snapshot.getValue(Product.class));
+            adapter = new ProductAdapter(products, new ProductAdapter.OnItemClickListener() {
+                @Override
+                public void onItemClick(Product product) {
+                    startActivity(new Intent(getApplicationContext(), ProductActivity.class).putExtra("product", product));
                 }
-                recyclerView.setHasFixedSize(true);
-                recyclerView.setLayoutManager(recyclerLayoutManager);
-                recyclerView.setAdapter(adapter);
+            });
+        }
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(recyclerLayoutManager);
+        recyclerView.setAdapter(adapter);
 
-                progressDialog.dismiss();
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
+        progressDialog.dismiss();
     }
 }

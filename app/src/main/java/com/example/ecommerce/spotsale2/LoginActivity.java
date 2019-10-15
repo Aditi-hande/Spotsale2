@@ -57,6 +57,10 @@ public class LoginActivity extends AppCompatActivity {
                 final String email = inputEmail.getText().toString();
                 final String password = inputPassword.getText().toString();
 
+                if(!PD.isShowing()) {
+                    PD.show();
+                }
+
                 try {
 
                     if (password.length() > 0 && email.length() > 0) {
@@ -70,6 +74,7 @@ public class LoginActivity extends AppCompatActivity {
                                                     "Authentication Failed",
                                                     Toast.LENGTH_LONG).show();
                                             Log.v("error", task.getResult().toString());
+                                            PD.dismiss();
                                         } else {
                                             FirebaseDatabase.getInstance().getReference()
                                                     .child(getString(R.string.users))
@@ -139,6 +144,8 @@ public class LoginActivity extends AppCompatActivity {
                             Toast.makeText(LoginActivity.this, "Cancelled", Toast.LENGTH_SHORT).show();
                         }
                     });
+        } else {
+            PD.dismiss();
         }
         super.onResume();
     }
