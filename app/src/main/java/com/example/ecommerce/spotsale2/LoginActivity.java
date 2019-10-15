@@ -85,6 +85,7 @@ public class LoginActivity extends AppCompatActivity {
                                                             Intent intent = new Intent(LoginActivity.this, CatalogActivity.class)
                                                                     .putExtra("user", dataSnapshot.getValue(Users.class))
                                                                     .putExtra("activity", "LoginActivity");
+                                                            PD.dismiss();
                                                             startActivity(intent);
                                                             finish();
                                                         }
@@ -95,7 +96,6 @@ public class LoginActivity extends AppCompatActivity {
                                                         }
                                                     });
                                         }
-                                        PD.dismiss();
                                     }
                                 });
                     } else {

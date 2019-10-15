@@ -1,15 +1,16 @@
 package com.example.ecommerce.spotsale2;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentActivity;
 
 import android.Manifest;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
-import android.location.Location;
+//import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.ResultReceiver;
@@ -17,6 +18,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.example.ecommerce.spotsale2.DatabaseClasses.Location;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationAvailability;
@@ -37,20 +39,20 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 
 import java.util.ArrayList;
 
-public class MapsActivity extends FragmentActivity
-        implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener {
+import javax.annotation.Nullable;
+
+public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
-    private GoogleApiClient googleApiClient;
-    private MapLocationCallback locationCallback = new MapLocationCallback();
 
     private final int locationRequestCode = 1000;
-    private final int UPDATE_INTERVAL = 5000, FASTEST_INTERVAL = 2500;
 
     private AddressResultReceiver resultReceiver;
     private ArrayList<Address> addresses;
@@ -64,55 +66,75 @@ public class MapsActivity extends FragmentActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
         resultReceiver = new MapsActivity.AddressResultReceiver(new Handler());
 
-        googleApiClient = new GoogleApiClient.Builder(this)
-                .addApi(LocationServices.API)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .build();
+        sourceRef = FirebaseFirestore.getInstance().collection("locations")
+                .document(FirebaseAuth.getInstance().getCurrentUser().getUid());
+
+        sourceRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
+                if(e != null) {
+                    Log.d("SnapshotListener", "Listen Failed");
+                }
+                if(documentSnapshot != null && documentSnapshot.exists()) {
+                    startIntentService(documentSnapshot.toObject(Location.class));
+                }
+            }
+        });
+
+        destRef = FirebaseFirestore.getInstance().collection("locations")
+                .document("");
+
     }
 
     @Override
     protected void onStart() {
         super.onStart();
 
-        if(googleApiClient != null) {
-            googleApiClient.connect();
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
+                    locationRequestCode);
+        } else {
+            startLocationService();
         }
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
-
-        if(googleApiClient != null && googleApiClient.isConnected()) {
-            LocationServices.getFusedLocationProviderClient(this).removeLocationUpdates(locationCallback);
-            googleApiClient.disconnect();
-        }
-        sourceRef.delete();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-
-        if(googleApiClient != null && googleApiClient.isConnected()) {
-            LocationServices.getFusedLocationProviderClient(this).removeLocationUpdates(locationCallback);
-            googleApiClient.disconnect();
-        }
-        sourceRef.delete();
+    public void onBackPressed() {
+        AlertDialog.Builder alertBuilder = new AlertDialog.Builder(this)
+                .setNeutralButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        MapsActivity.super.onBackPressed();
+                    }
+                })
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        MapsActivity.super.onBackPressed();
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                    }
+                })
+                .setMessage("Do you wish to stop Location Service?");
+        alertBuilder.create().show();
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-
     }
 
     @Override
@@ -120,7 +142,6 @@ public class MapsActivity extends FragmentActivity
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         switch (requestCode) {
             case locationRequestCode: {
-                // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     startLocationService();
                 } else {
@@ -130,7 +151,6 @@ public class MapsActivity extends FragmentActivity
             }
         }
     }
-
 
     protected void startIntentService(Location location) {
         Intent intent = new Intent(this, FetchAddressIntentService.class);
@@ -147,73 +167,13 @@ public class MapsActivity extends FragmentActivity
         return TextUtils.join(System.getProperty("line.separator"), addressFragments);
     }
 
-    @Override
-    public void onConnected(@Nullable Bundle bundle) {
-
-        Log.d("ADDRESSES", "onConnected: CONNECTED");
-        Toast.makeText(this, "Connected Successfully", Toast.LENGTH_SHORT).show();
-
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
-                    locationRequestCode);
-
-        } else {
-            LocationServices.getFusedLocationProviderClient(this).getLastLocation()
-                    .addOnSuccessListener(new OnSuccessListener<Location>() {
-                        @Override
-                        public void onSuccess(Location location) {
-                            startIntentService(location);
-                        }
-                    });
-
-            startLocationService();
-        }
-    }
-
     protected void startLocationService() {
-        LocationRequest locationRequest = new LocationRequest()
-                .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
-                .setInterval(UPDATE_INTERVAL)
-                .setFastestInterval(FASTEST_INTERVAL);
 
-        Log.d("ADDRESSES", "startLocationService: STARTED");
+        if(!Globals.isLocationMonitoringServiceRunning) {
+            startService(new Intent(this, LocationMonitoringService.class));
+            Globals.isLocationMonitoringServiceRunning = true;
+        }
         Toast.makeText(this, "Location Updates ON", Toast.LENGTH_LONG).show();
-
-        LocationServices.getFusedLocationProviderClient(this).requestLocationUpdates(locationRequest, locationCallback, null);
-
-        sourceRef = FirebaseFirestore.getInstance().collection("locations")
-                .document(FirebaseAuth.getInstance().getCurrentUser().getUid());
-        //destRef = FirebaseFirestore.getInstance().collection("locations").document(seller.getUID());
-    }
-
-    @Override
-    public void onConnectionSuspended(int i) {
-
-    }
-
-    @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
-    }
-
-    class MapLocationCallback extends LocationCallback {
-
-        @Override
-        public void onLocationResult(LocationResult locationResult) {
-            super.onLocationResult(locationResult);
-            startIntentService(locationResult.getLastLocation());
-        }
-
-        @Override
-        public void onLocationAvailability(LocationAvailability locationAvailability) {
-            super.onLocationAvailability(locationAvailability);
-            if(!locationAvailability.isLocationAvailable()) {
-                Toast.makeText(MapsActivity.this, "Location Not Available", Toast.LENGTH_SHORT).show();
-            }
-        }
     }
 
     class AddressResultReceiver extends ResultReceiver {
@@ -237,36 +197,16 @@ public class MapsActivity extends FragmentActivity
                     return;
 
                 }
-
-                //Toast.makeText(MapsActivity.this, "Location Update Received", Toast.LENGTH_LONG).show();
-
-                for (Address address : addresses) {
-                    Log.d("ADDRESSES", "String: " + getAddressString(address));
-                    Log.d("ADDRESSES", "Coords: " + address.getLatitude() + "," + address.getLongitude());
+                sourceAddress = addresses.get(0);
+                LatLng source = new LatLng(sourceAddress.getLatitude(), sourceAddress.getLongitude());
+                bounds.include(source);
+                if (sourceMarker == null) {
+                    sourceMarker = mMap.addMarker(new MarkerOptions().position(source).title("You").snippet("This is you"));
+                } else {
+                    sourceMarker.setPosition(source);
                 }
-
-                //if(sourceAddress == null){
-                    sourceAddress = addresses.get(0);
-                    LatLng source = new LatLng(sourceAddress.getLatitude(), sourceAddress.getLongitude());
-                    sourceRef.set(source);
-                    bounds.include(source);
-                    if(sourceMarker == null) {
-                        sourceMarker = mMap.addMarker(new MarkerOptions().position(source).title("You"));
-                    } else {
-                        sourceMarker.setPosition(source);
-                    }
-                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(source, 16.0f));
-                /*} else {
-                    destinationAddress = addresses.get(0);
-                    LatLng dest = new LatLng(destinationAddress.getLatitude(), destinationAddress.getLongitude());
-                    bounds.include(dest);
-                    if(destMarker == null) {
-                        destMarker = mMap.addMarker(new MarkerOptions().position(dest).title("Them"));
-                    } else {
-                        destMarker.setPosition(dest);
-                    }
-                    mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds.build(), 10));
-                }*/
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(source, 16.0f));
+                //mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds.build(), 10));
 
                 Log.d("ADDRESSES", "received addreses count:" + resultData.getInt("COUNT"));
             } else {

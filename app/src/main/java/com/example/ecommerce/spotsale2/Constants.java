@@ -1,6 +1,7 @@
 package com.example.ecommerce.spotsale2;
 
 public final class Constants {
+    /*    Address Fetching Intent Service    */
     public static final int SUCCESS_RESULT = 0;
     public static final int FAILURE_RESULT = 1;
     public static final String PACKAGE_NAME =
@@ -11,9 +12,8 @@ public final class Constants {
     public static final String LOCATION_DATA_EXTRA = PACKAGE_NAME +
             ".LOCATION_DATA_EXTRA";
 
-
-    /*    Travel Time Platform    */
-    public static final String API_ID = "6306e8b8a6b75f536864bb5c3045fe2e";
-    public static final String API_KEY = "6306e8b8a6b75f536864bb5c3045fe2e";
+    /*    Location Monitoring Service    */
+    public static final long LOCATION_INTERVAL = 5000;
+    public static final long LOCATION_FASTEST_INTERVAL = 5000;
 
 }
