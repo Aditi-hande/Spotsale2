@@ -1,6 +1,8 @@
 package com.example.ecommerce.spotsale2;
 
 import android.Manifest;
+import android.app.Notification;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -35,6 +37,7 @@ public class LocationMonitoringService extends Service
     private LocationRequest locationRequest = new LocationRequest();
 
     private final String TAG = "LocationService";
+    private static final int NOTIFICATION_ID = 1;
 
     @Nullable
     @Override
@@ -120,4 +123,28 @@ public class LocationMonitoringService extends Service
             }
         }
     }
+    /*
+    private void showForegroundNotification(String contentText) {
+        // Create intent that will bring our app to the front, as if it was tapped in the app
+        // launcher
+        Intent showTaskIntent = new Intent(getApplicationContext(), MapsActivity.class);
+        showTaskIntent.setAction(Intent.ACTION_MAIN);
+        showTaskIntent.addCategory(Intent.CATEGORY_LAUNCHER);
+        showTaskIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+        PendingIntent contentIntent = PendingIntent.getActivity(
+                getApplicationContext(),
+                0,
+                showTaskIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT);
+
+        Notification notification = new Notification.Builder(getApplicationContext())
+                .setContentTitle(getString(R.string.app_name))
+                .setContentText(contentText)
+                .setSmallIcon(R.mipmap.ic_logo_round)
+                .setWhen(System.currentTimeMillis())
+                .setContentIntent(contentIntent)
+                .build();
+        startForeground(NOTIFICATION_ID, notification);
+    }*/
 }
