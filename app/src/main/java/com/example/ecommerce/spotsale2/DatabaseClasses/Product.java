@@ -20,6 +20,38 @@ public class Product implements Serializable {
         String user_id;
         int cost;
         int age;
+
+
+
+        public SellerDesc(String user_id, int cost, int age) {
+            this.user_id = user_id;
+            this.cost = cost;
+            this.age = age;
+        }
+
+        public String getUser_id() {
+            return user_id;
+        }
+
+        public void setUser_id(String user_id) {
+            this.user_id = user_id;
+        }
+
+        public int getCost() {
+            return cost;
+        }
+
+        public void setCost(int cost) {
+            this.cost = cost;
+        }
+
+        public int getAge() {
+            return age;
+        }
+
+        public void setAge(int age) {
+            this.age = age;
+        }
     }
 
     public Product(String cat_id, String item_id, int qty, int cost, String name, String description, String brand, List<SellerDesc> sellers, String imageUrl) {

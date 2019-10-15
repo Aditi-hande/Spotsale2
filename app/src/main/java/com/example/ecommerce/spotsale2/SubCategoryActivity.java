@@ -26,7 +26,7 @@ public class SubCategoryActivity extends AppCompatActivity {
 
 
 
-
+    private String category;
     private CategoryAdapter adapter;
 
     private ProgressDialog PD;
@@ -46,7 +46,7 @@ public class SubCategoryActivity extends AppCompatActivity {
         recyclerLayoutManager = new GridLayoutManager(this, 1);
 
         PD.show();
-        String category=getIntent().getStringExtra("category");
+         category=getIntent().getStringExtra("category");
         Log.v("category",category);
 
         /*    Get data from Database to populate Recycler View    */
@@ -64,7 +64,7 @@ public class SubCategoryActivity extends AppCompatActivity {
 
                             public void onItemClick(String subcategory) {
                                 //Toast.makeText(SubCategoryActivity.this,subcategory,Toast.LENGTH_LONG).show();
-                                Intent intent=new Intent(SubCategoryActivity.this,SellerActivity.class).putExtra("subcategory",subcategory);
+                                Intent intent=new Intent(SubCategoryActivity.this,SellerActivity.class).putExtra("subcategory",subcategory).putExtra("category",category);
                                 startActivity(intent);
                             }
                         });

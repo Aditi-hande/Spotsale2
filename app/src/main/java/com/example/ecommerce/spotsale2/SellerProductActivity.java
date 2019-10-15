@@ -90,9 +90,7 @@ public class SellerProductActivity extends AppCompatActivity {
 
                     ref.setValue(inventory);
 
-                    /*    Decrease product qty from stocks    */
-                    //product.setQty(product.getQty() - 1);
-                    //db.document(product.getItem_id()).set(product);
+
 
                     Snackbar.make(v, "Added to Inventory", Snackbar.LENGTH_LONG).show();
                 } else{

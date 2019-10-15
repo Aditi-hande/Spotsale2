@@ -22,7 +22,7 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:ems="10"
-        android:hint="name" />
+        android:hint="Name" />
 
     <EditText
         android:id="@+id/brand"
@@ -31,7 +31,7 @@
         android:layout_weight="1"
         android:ems="10"
         android:inputType="text"
-        android:hint="brand" />
+        android:hint="Brand" />
 
     <EditText
         android:id="@+id/description"
@@ -40,7 +40,7 @@
         android:layout_weight="1"
         android:ems="10"
         android:inputType="textMultiLine"
-        android:hint="description" />
+        android:hint="Description" />
 
 
     <EditText
@@ -50,7 +50,7 @@
         android:layout_weight="1"
         android:ems="10"
         android:inputType="number"
-        android:hint="qty" />
+        android:hint="Qty" />
 
     <EditText
         android:id="@+id/cost"
@@ -58,7 +58,7 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:ems="10"
-        android:hint="cost"
+        android:hint="Cost"
         android:inputType="numberDecimal"
         />
 
@@ -69,11 +69,14 @@
         android:layout_weight="1"
         android:ems="10"
         android:inputType="text"
-        android:hint="image urls" />
+        android:hint="Image Urls" />
+
 
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="ADD"
         android:onClick="addItem"/>
+
+
 </LinearLayout>
