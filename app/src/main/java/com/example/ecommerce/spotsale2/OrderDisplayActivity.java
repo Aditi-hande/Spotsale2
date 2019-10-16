@@ -1,6 +1,7 @@
 package com.example.ecommerce.spotsale2;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.ProgressDialog;
@@ -34,8 +35,17 @@ public class OrderDisplayActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_order_display);
 
+        productList = new ArrayList<>();
+        cartSumText = (TextView) findViewById(R.id.disp_order_cart_sum);
+        recyclerView = (RecyclerView) findViewById(R.id.order_display_recycler);
+        recyclerLayoutManager = new GridLayoutManager(this, 1);
+
+
         cart = (Cart) getIntent().getSerializableExtra("cart");
         products = cart.getProductList();
+        if(products == null) {
+            products = new ArrayList<>();
+        }
         final int[] count = {products.size()};
 
         final ProgressDialog progressDialog = new ProgressDialog(this);
@@ -58,6 +68,8 @@ public class OrderDisplayActivity extends AppCompatActivity {
                                 recyclerView.setHasFixedSize(false);
                                 recyclerView.setLayoutManager(recyclerLayoutManager);
                                 recyclerView.setAdapter(adapter);
+
+                                cartSumText.setText("Total: " + cart.getTotal_sum());
                             }
                         }
                     });

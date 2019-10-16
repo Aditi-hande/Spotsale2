@@ -10,21 +10,13 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Enter Your Choice"
+        android:text="Select Your Choice"
         android:textStyle="bold"
         android:textSize="25dp"
         android:gravity="center"
         android:paddingTop="10dp"/>
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/active"
-        android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:gravity="center"
-        android:paddingVertical="10dp"
-        android:paddingTop="90dp"
-        android:onClick="active"
-        android:text="ACTIVE CART" />
+
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/pending"

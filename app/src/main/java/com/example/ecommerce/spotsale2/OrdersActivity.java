@@ -56,25 +56,24 @@ public class OrdersActivity extends AppCompatActivity {
                 .addValueEventListener(new ValueEventListener() {
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                            Cart cart1 = (Cart) snapshot.getValue();
+                            Cart cart1 = (Cart) snapshot.getValue(Cart.class);
                             cartlist.add(cart1);
                             Log.v("cart", cartlist.toString());
-
-                            adapter = new OrderAdapter(cartlist, new OrderAdapter.OnItemClickListener() {
-
-                                public void onItemClick(Cart cart1) {
-                                    //Toast.makeText(SubCategoryActivity.this,subcategory,Toast.LENGTH_LONG).show();
-                                    Intent intent = new Intent(OrdersActivity.this, OrderDisplayActivity.class).putExtra("cart", cart1);
-                                    startActivity(intent);
-                                }
-                            });
-                            recyclerView.setHasFixedSize(false);
-                            recyclerView.setLayoutManager(recyclerLayoutManager);
-                            recyclerView.setAdapter(adapter);
-
-                            PD.dismiss();
                         }
-                        }
+                        adapter = new OrderAdapter(cartlist, new OrderAdapter.OnItemClickListener() {
+
+                            public void onItemClick(Cart cart1) {
+                                //Toast.makeText(SubCategoryActivity.this,subcategory,Toast.LENGTH_LONG).show();
+                                Intent intent = new Intent(OrdersActivity.this, OrderDisplayActivity.class).putExtra("cart", cart1);
+                                startActivity(intent);
+                            }
+                        });
+                        recyclerView.setHasFixedSize(false);
+                        recyclerView.setLayoutManager(recyclerLayoutManager);
+                        recyclerView.setAdapter(adapter);
+
+                        PD.dismiss();
+                    }
 
 
                         public void onCancelled(DatabaseError databaseError) {

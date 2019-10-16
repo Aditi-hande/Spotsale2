@@ -5,13 +5,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".CartActivity">
+    tools:context=".OrderDisplayActivity">
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/cardview_light_background"
-        android:id="@+id/cart_sum"
+        android:id="@+id/disp_order_cart_sum"
         android:textSize="24sp"
         android:gravity="center"
         android:layout_gravity="top"
@@ -23,7 +23,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:scrollbars="vertical"
-        android:id="@+id/cart_recycler"
+        android:id="@+id/order_display_recycler"
         android:layout_marginTop="58dp">
 
     </androidx.recyclerview.widget.RecyclerView>

@@ -22,15 +22,12 @@ public class OrderOptionActivity extends AppCompatActivity {
         setContentView(R.layout.activity_order_option);
     }
 
-    public void active(View view){
-        startActivity(new Intent(getApplicationContext(),OrdersActivity.class).putExtra("status",ACTIVE));
-    }
-
+   
     public void pending(View view){
-        startActivity(new Intent(getApplicationContext(),OrdersActivity.class).putExtra("status",PENDING));
+        startActivity(new Intent(getApplicationContext(),OrdersActivity.class).putExtra("status",PENDING.toString()));
     }
 
     public void delivered(View view){
-        startActivity(new Intent(getApplicationContext(),OrdersActivity.class).putExtra("status",DELIVERED));
+        startActivity(new Intent(getApplicationContext(),OrdersActivity.class).putExtra("status",DELIVERED.toString()));
     }
 }

@@ -32,7 +32,7 @@ public class OrderDisplayAdapter extends RecyclerView.Adapter<OrderDisplayAdapte
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.recycler_row_catalog, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.recycler_row_displayorder, parent, false);
         return new OrderDisplayAdapter.ViewHolder(view);
     }
 
@@ -45,9 +45,11 @@ public class OrderDisplayAdapter extends RecyclerView.Adapter<OrderDisplayAdapte
                 .placeholder(R.drawable.ic_img_placeholder)
                 .error(R.drawable.ic_img_error)
                 .into(holder.imageView);
+
         holder.textView.setText(products.get(position).getName());
-        holder.textView.setText(String.valueOf(products.get(position).getCost()));
+        holder.textView1.setText(String.valueOf(products.get(position).getCost()));
         holder.bind(products.get(position));
+
     }
 
     @Override
@@ -58,7 +60,7 @@ public class OrderDisplayAdapter extends RecyclerView.Adapter<OrderDisplayAdapte
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
         ImageView imageView;
-        TextView textView;
+        TextView textView,textView1;
 
 
         public ViewHolder(@NonNull View itemView) {
@@ -66,7 +68,8 @@ public class OrderDisplayAdapter extends RecyclerView.Adapter<OrderDisplayAdapte
 
             imageView = (ImageView) itemView.findViewById(R.id.disp_order_row_image);
             textView = (TextView) itemView.findViewById(R.id.disp_order_row_name);
-            textView = (TextView) itemView.findViewById(R.id.disp_order_row_cost);
+            textView1 = (TextView) itemView.findViewById(R.id.disp_order_row_cost);
+
 
             //deleteButton = (ImageButton) itemView.findViewById(R.id.cart_row_delbtn);
         }
