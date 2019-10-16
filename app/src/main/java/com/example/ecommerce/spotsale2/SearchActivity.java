@@ -12,6 +12,9 @@ import android.os.Bundle;
 import android.widget.Toast;
 
 import com.example.ecommerce.spotsale2.DatabaseClasses.Product;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -19,8 +22,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class SearchActivity extends AppCompatActivity {
 
@@ -28,7 +34,7 @@ public class SearchActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
     private RecyclerView.LayoutManager recyclerLayoutManager;
-    private ArrayList<Product> products;
+    private List<Product> products;
     private ProductAdapter adapter;
 
     @Override
@@ -61,22 +67,28 @@ public class SearchActivity extends AppCompatActivity {
 
     private void search(String query) {
 
-        FirebaseFirestore.getInstance().collection(getString(R.string.products));
-/*
-        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-            products.add(snapshot.getValue(Product.class));
-            adapter = new ProductAdapter(products, new ProductAdapter.OnItemClickListener() {
-                @Override
-                public void onItemClick(Product product) {
-                    startActivity(new Intent(getApplicationContext(), ProductActivity.class).putExtra("product", product));
-                }
-            });
-        }
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(recyclerLayoutManager);
-        recyclerView.setAdapter(adapter);
-        */
+        FirebaseFirestore.getInstance().collection(getString(R.string.products))
+                .whereGreaterThanOrEqualTo("name", query)
+                .orderBy("name")
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        products = queryDocumentSnapshots.toObjects(Product.class);
+                        adapter = new ProductAdapter((ArrayList<Product>) products, new ProductAdapter.OnItemClickListener() {
+                            @Override
+                                public void onItemClick(Product product) {
+                                    startActivity(new Intent(getApplicationContext(), ProductActivity.class).putExtra("product", product));
+                                }
+                            });
 
-        progressDialog.dismiss();
+                        recyclerView.setHasFixedSize(true);
+                        recyclerView.setLayoutManager(recyclerLayoutManager);
+                        recyclerView.setAdapter(adapter);
+
+
+                        progressDialog.dismiss();
+                        }
+                    });
     }
 }

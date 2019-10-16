@@ -15,4 +15,7 @@ public final class Constants {
     public static final long LOCATION_INTERVAL = 5000;
     public static final long LOCATION_FASTEST_INTERVAL = 5000;
 
+    /*    Firebase Messaging Service    */
+    public static final String MESSAGING_URL = "";
+
 }

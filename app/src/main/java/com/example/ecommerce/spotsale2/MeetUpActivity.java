@@ -10,10 +10,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.shapes.Shape;
 import android.location.Address;
 //import android.location.Location;
 import android.net.Uri;
@@ -49,7 +46,7 @@ import java.util.ArrayList;
 
 import javax.annotation.Nullable;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
+public class MeetUpActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
 
@@ -71,7 +68,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        resultReceiver = new MapsActivity.AddressResultReceiver(new Handler());
+        resultReceiver = new MeetUpActivity.AddressResultReceiver(new Handler());
 
         sourceRef = FirebaseFirestore.getInstance().collection("locations")
                 .document(FirebaseAuth.getInstance().getCurrentUser().getUid());
@@ -171,14 +168,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .setNeutralButton("No", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        MapsActivity.super.onBackPressed();
+                        MeetUpActivity.super.onBackPressed();
                     }
                 })
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        stopService(new Intent(MapsActivity.this, LocationMonitoringService.class));
-                        MapsActivity.super.onBackPressed();
+                        stopService(new Intent(MeetUpActivity.this, LocationMonitoringService.class));
+                        MeetUpActivity.super.onBackPressed();
                     }
                 })
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -285,7 +282,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                 Log.d("ADDRESSES", "received addreses count:" + resultData.getInt("COUNT"));
             } else {
-                Toast.makeText(MapsActivity.this, resultData.getString(Constants.RESULT_DATA_KEY), Toast.LENGTH_LONG).show();
+                Toast.makeText(MeetUpActivity.this, resultData.getString(Constants.RESULT_DATA_KEY), Toast.LENGTH_LONG).show();
             }
 
         }

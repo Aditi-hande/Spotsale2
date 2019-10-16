@@ -19,6 +19,7 @@ import android.widget.Toast;
 import com.example.ecommerce.spotsale2.DatabaseClasses.Cart;
 import com.example.ecommerce.spotsale2.DatabaseClasses.Users;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -27,6 +28,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -144,6 +148,35 @@ public class LoginActivity extends AppCompatActivity {
                         @Override
                         public void onCancelled(@NonNull DatabaseError databaseError) {
                             Toast.makeText(LoginActivity.this, "Cancelled", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+            FirebaseInstanceId.getInstance().getInstanceId()
+                    .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                            if (!task.isSuccessful()) {
+                                Log.w("LOGIN", "getInstanceId failed", task.getException());
+                                return;
+                            }
+
+                            // Get new Instance ID token
+                            String token = task.getResult().getToken();
+
+                            FirebaseDatabase.getInstance().getReference().child("Tokens")
+                                    .child(auth.getCurrentUser().getUid())
+                                    .setValue(token);
+                        }
+                    });
+            FirebaseMessaging.getInstance().subscribeToTopic(auth.getCurrentUser().getEmail())
+                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            String msg = "Subscribed successfully";
+                            if (!task.isSuccessful()) {
+                                msg = "Could not Subscribe";
+                            }
+                            Log.d("FirebaseMessaging", msg);
+                            Toast.makeText(LoginActivity.this, msg, Toast.LENGTH_SHORT).show();
                         }
                     });
         } else {

@@ -4,8 +4,6 @@ import android.app.ProgressDialog;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -277,7 +275,7 @@ public class CatalogActivity extends AppCompatActivity
         } else if (id == R.id.nav_Help) {
 
         } else if (id == R.id.nav_addresses) {
-            startActivity(new Intent(getApplicationContext(), MapsActivity.class));
+            startActivity(new Intent(getApplicationContext(), MeetUpActivity.class));
         } else if (id == R.id.nav_seller) {
             startActivity(new Intent(getApplicationContext(), CategoryActivity.class));
         } else if (id == R.id.nav_additem) {

@@ -19,7 +19,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
-import androidx.fragment.app.DialogFragment;
 
 import com.example.ecommerce.spotsale2.DatabaseClasses.Location;
 import com.google.android.gms.common.ConnectionResult;
@@ -29,7 +28,6 @@ import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -140,7 +138,7 @@ public class LocationMonitoringService extends Service
     private void showForegroundNotification(String contentText) {
         // Create intent that will bring our app to the front, as if it was tapped in the app
         // launcher
-        Intent showTaskIntent = new Intent(getApplicationContext(), MapsActivity.class);
+        Intent showTaskIntent = new Intent(getApplicationContext(), MeetUpActivity.class);
         showTaskIntent.setAction(Intent.ACTION_MAIN);
         showTaskIntent.addCategory(Intent.CATEGORY_LAUNCHER);
         showTaskIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
