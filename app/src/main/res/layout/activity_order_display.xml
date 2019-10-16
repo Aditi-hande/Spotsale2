@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".OrderDisplayActivity">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/cardview_light_background"
+        android:id="@+id/disp_order_cart_sum"
+        android:textSize="24sp"
+        android:gravity="center"
+        android:layout_gravity="top"
+        android:paddingVertical="13dp"
+        android:text="Total"
+        />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scrollbars="vertical"
+        android:id="@+id/order_display_recycler"
+        android:layout_marginTop="58dp">
+
+    </androidx.recyclerview.widget.RecyclerView>
+
+    <!--Spinner
+        android:id="@+id/cart_address"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:drawable/btn_dropdown"
+        android:spinnerMode="dropdown"
+        /-->
+
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

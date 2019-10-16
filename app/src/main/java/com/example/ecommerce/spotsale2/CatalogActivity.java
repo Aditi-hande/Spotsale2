@@ -271,6 +271,7 @@ public class CatalogActivity extends AppCompatActivity
             startActivity(new Intent(getApplicationContext(),CategoryActivity.class));
 
         } else if (id == R.id.nav_orders) {
+            startActivity(new Intent(getApplicationContext(),OrderOptionActivity.class));
 
         } else if (id == R.id.nav_Help) {
 

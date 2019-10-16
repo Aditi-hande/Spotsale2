@@ -23,6 +23,7 @@ import android.widget.Toast;
 
 import com.example.ecommerce.spotsale2.DatabaseClasses.Cart;
 import com.example.ecommerce.spotsale2.DatabaseClasses.Product;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -30,6 +31,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -59,6 +62,7 @@ public class CartActivity extends AppCompatActivity {
         setContentView(R.layout.activity_cart);
 
         cart = (Cart) getIntent().getSerializableExtra("activeCart");
+        List<String> productIds = cart.getProductList();
 
         addr_list.add("Select Address");// this will act as hint for spinner
 
@@ -97,21 +101,28 @@ public class CartActivity extends AppCompatActivity {
                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                 .child(cart.getCart_id());
 
-
+/*
         cartRef.child("productList")
                 .addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    products.add(snapshot.getValue(Product.class));
-                    cart.fromProductList(products);
+                    FirebaseFirestore.getInstance().collection(getString(R.string.products))
+                            .document(snapshot.getValue(String.class))
+                            .get()
+                            .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                @Override
+                                public void onSuccess(DocumentSnapshot documentSnapshot) {
+
+                                }
+                            });
                 }
                 adapter = new CartAdapter(products, new CartAdapter.OnItemClickListener() {
                     @Override
                     public void onItemClick(final Product product, View view) {
                         products.remove(product);
                         Log.d("DeleteFromCart", products.toString());
-                        cart.fromProductList(products);
+                        cart.setProductList(products);
                         cart.setTotal_sum(cart.getTotal_sum() - product.getCost());
                         cart.setTotal_items(cart.getTotal_items() - 1);
                         cartRef.setValue(cart);
@@ -131,7 +142,40 @@ public class CartActivity extends AppCompatActivity {
             public void onCancelled(@NonNull DatabaseError databaseError) {
                 Log.d("OnCancelled", "Cancelled");
             }
-        });
+        });*/
+
+        final int[] count = {productIds.size()};
+        for (final String product : productIds) {
+            FirebaseFirestore.getInstance().collection("products")
+                    .document(product)
+                    .get()
+                    .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                        @Override
+                        public void onSuccess(DocumentSnapshot documentSnapshot) {
+                            products.add(documentSnapshot.toObject(Product.class));
+                            if(--count[0] == 0){
+                                PD.dismiss();
+                                adapter =  new CartAdapter(products,new CartAdapter.OnItemClickListener() {
+                                    @Override
+                                    public void onItemClick(final Product product, View view) {
+                                        products.remove(product);
+                                        Log.d("DeleteFromCart", products.toString());
+                                        cart.fromProductList(products);
+                                        cart.setTotal_sum(cart.getTotal_sum() - product.getCost());
+                                        cart.setTotal_items(cart.getTotal_items() - 1);
+                                        cartRef.setValue(cart);
+                                        recreate();
+                                    }
+                                });
+                                recyclerView.setHasFixedSize(false);
+                                recyclerView.setLayoutManager(recyclerLayoutManager);
+                                recyclerView.setAdapter(adapter);
+
+                                cartSumText.setText("Total: " + cart.getTotal_sum());
+                            }
+                        }
+                    });
+        }
 
 /*
         final ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>(
