@@ -16,7 +16,7 @@ public class Product implements Serializable {
     private List<SellerDesc> sellers;
     private String imageUrl;
 
-    public static class SellerDesc {
+    public static class SellerDesc implements Serializable {
         String user_id;
         int cost;
         int age;
