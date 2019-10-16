@@ -22,7 +22,8 @@
         android:layout_height="100dp"
         android:gravity="center"
         android:paddingVertical="10dp"
-        android:paddingTop="60dp"
+        android:paddingTop="90dp"
+        android:onClick="active"
         android:text="ACTIVE CART" />
 
     <com.google.android.material.button.MaterialButton
@@ -32,6 +33,7 @@
         android:gravity="center"
         android:paddingVertical="10dp"
         android:paddingTop="60dp"
+        android:onClick="pending"
         android:text="PENDING CART" />
 
     <com.google.android.material.button.MaterialButton
@@ -41,6 +43,7 @@
         android:gravity="center"
         android:paddingVertical="10dp"
         android:paddingTop="60dp"
+        android:onClick="delivered"
         android:text="DELIVERED CART" />
 
 
